@@ -1,22 +1,16 @@
 import "../Css/cliente.css";
-import { useState } from "react";
-import Navegacion from "./navegacion";
+import ImportarNav from "../Importar nav/importar-nav";
 /** numero de cuenta saldo estado
  * numero de tarjeta tipo estado y fecha de vencimiento
  * historial de transacciones y tipo de transaccion
  */
 
 function Cliente () {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-
-    const handleSidebarToggle = () => {
-        setSidebarOpen(open => !open);
-    };
 
     return (
         
-        <div className={"cliente" + (sidebarOpen ? " sidebar-open" : "")}>
-            <Navegacion isOpen={sidebarOpen} onToggle={handleSidebarToggle} />
+        <div className="cliente">
+            <ImportarNav/>
             <div className="info-cards">
                 <div className="account-info">
                     <h2>Cuenta</h2>

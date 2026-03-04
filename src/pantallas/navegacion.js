@@ -1,10 +1,10 @@
 import "../Css/Navegacion.css"
 import { Link } from "react-router-dom";
-import { IconCashPlus, IconUser, IconWallet, IconHelp,IconClipboardData,IconHome, IconSearch } from '@tabler/icons-react';
+import { IconCashPlus, IconUser, IconWallet,IconCashBanknoteMinus,IconScale, IconHelp,IconClipboardData,IconHome, IconSearch } from '@tabler/icons-react';
 
-// Receive props from parent to control sidebar state
+
 function Navegacion({ isOpen, onToggle }) {
-    // handleToggle comes from parent "Cliente" component
+
     const handleToggle = () => {
         if (onToggle) onToggle();
     };
@@ -26,17 +26,21 @@ function Navegacion({ isOpen, onToggle }) {
                 </div>
             </div>
             <div className="right">
-                {/* agregar dinero */}
-                <Link href="#" className="pestañas icons-header">
-                    <IconCashPlus alt="chat" />
+                {/* Depositar */}
+                <Link to="/cliente/depositar" className="pestañas icons-header">
+                    <IconCashPlus alt="Depositar" />
                 </Link>
                 {/* retirar dinero */}
-                <Link href="#" className="pestañas icons-header">
-                    <IconCashPlus alt="question" />
+                <Link to="/cliente/retirar" className="pestañas icons-header">
+                    <IconCashBanknoteMinus alt="retirar" />
                 </Link>
-                {/*Historial */}
-                <Link href="#" className="pestañas icons-header">
-                    <IconCashPlus alt="notificacion" />
+                {/* Actividad */}
+                <Link to="/cliente/actividad" className="pestañas icons-header">
+                    <IconClipboardData alt="historial" />
+                </Link>
+                {/* consultar saldo */}
+                <Link to="/cliente/saldo" className="pestañas icons-header">
+                    <IconScale alt="saldo" />
                 </Link>
                 {/* perfil */}
                 <Link href="#" className="pestañas icons-header">
@@ -56,35 +60,35 @@ function Navegacion({ isOpen, onToggle }) {
                     </li>
                     <li>
                         {/* Home */}
-                        <Link href="#" className="a selected">
+                        <Link to="/cliente" className="a selected">
                             <IconHome alt="inicio" className="img" />
                             <span>Inicio</span>
                         </Link>
                     </li>
                     <li>
                         {/* Actividad */}
-                        <Link href="#" className="a">
+                        <Link to="/cliente/actividad" className="a">
                             <IconClipboardData alt="actividad" className="img" />
                             <span>Actividad</span>
                         </Link>
                     </li>
                     <li>
                         {/* Retirar Dinero */}
-                        <Link href="#" className="a">
-                            <IconCashPlus alt="retirar" className="img" />
+                        <Link to="/cliente/retirar" className="a">
+                            <IconCashBanknoteMinus alt="retirar" className="img" />
                             <span>Retirar Dinero</span>
                         </Link>
                     </li>
                     <li>
-                        {/* Agregar Dinero */}
-                        <Link href="#" className="a">
+                        {/* Depositar */}
+                        <Link to="/cliente/depositar" className="a">
                             <IconCashPlus alt="agregar" className="img" />
-                            <span>Agregar Dinero</span>
+                            <span>Depositar Dinero</span>
                         </Link>
                     </li>
                     <li>
                         {/* Ayuda */}
-                        <Link href="#" className="a">
+                        <Link to="/cliente/ayuda" className="a">
                             <IconHelp alt="ayuda" className="img" />
                             <span>Ayuda</span>
                         </Link>

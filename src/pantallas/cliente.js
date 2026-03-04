@@ -1,4 +1,5 @@
 import "../Css/cliente.css";
+import { useState } from "react";
 import Navegacion from "./navegacion";
 /** numero de cuenta saldo estado
  * numero de tarjeta tipo estado y fecha de vencimiento
@@ -6,10 +7,16 @@ import Navegacion from "./navegacion";
  */
 
 function Cliente () {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const handleSidebarToggle = () => {
+        setSidebarOpen(open => !open);
+    };
+
     return (
         
-        <div className="cliente">
-            <Navegacion />
+        <div className={"cliente" + (sidebarOpen ? " sidebar-open" : "")}>
+            <Navegacion isOpen={sidebarOpen} onToggle={handleSidebarToggle} />
             <div className="info-cards">
                 <div className="account-info">
                     <h2>Cuenta</h2>

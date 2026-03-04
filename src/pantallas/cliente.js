@@ -1,5 +1,5 @@
 import "../Css/cliente.css";
-
+import Navegacion from "./navegacion";
 /** numero de cuenta saldo estado
  * numero de tarjeta tipo estado y fecha de vencimiento
  * historial de transacciones y tipo de transaccion
@@ -7,7 +7,9 @@ import "../Css/cliente.css";
 
 function Cliente () {
     return (
+        
         <div className="cliente">
+            <Navegacion />
             <div className="info-cards">
                 <div className="account-info">
                     <h2>Cuenta</h2>

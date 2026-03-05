@@ -6,6 +6,9 @@ import RetirarDinero from "./pantallas/retirar_dinero";
 import Actividad from "./pantallas/actividad";
 import Ayuda from "./pantallas/ayuda";
 
+import Admin from "./pantallas/pantallas de administradore/admin";
+import Operador from "./pantallas/pantallas de administradore/operador";
+
 import { createRoot } from "react-dom/client";
 import { BrowserRouter , Routes, Route } from "react-router-dom";
 
@@ -20,6 +23,8 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/cliente/retirar" element={<RetirarDinero />} />
                 <Route path="/cliente/actividad" element={<Actividad />} />
                 <Route path="/cliente/ayuda" element={<Ayuda />} />
+                <Route path="/admin/" element={<Admin />} />
+                <Route path="/operador/" element={<Operador />} />
             </Routes>
         </BrowserRouter>
         

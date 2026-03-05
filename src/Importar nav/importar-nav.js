@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Navegacion from "../pantallas/navegacion";
+import Navegacion from "./navegacion";
 function ImportarNav() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     

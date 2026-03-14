@@ -85,6 +85,10 @@ td {
 .historial th {
     background: #f4f4f45e;
 }
+.monto-positivo { color: #2ecc71; font-weight: bold; }
+.monto-negativo { color: #e74c3c; font-weight: bold; }
+.bienvenida { padding: 1rem; }
+.loading, .error { padding: 2rem; text-align: center; }
 
 @media (max-width: 768px) {
     .account-info,

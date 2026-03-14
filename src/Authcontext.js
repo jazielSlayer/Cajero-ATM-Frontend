@@ -2,13 +2,10 @@ import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
-/**
- * Provee el contexto de autenticación a toda la app.
- * Guarda en sessionStorage para que no se pierda al refrescar.
- */
 export function AuthProvider({ children }) {
     const [usuario, setUsuario] = useState(() => {
         try {
+            /**guarda los datos del usuario en el storage */
             const guardado = sessionStorage.getItem("usuario_atm");
             return guardado ? JSON.parse(guardado) : null;
         } catch {

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { loginRequest } from "../Api/Api/Login";
+import { Link, useNavigate } from "react-router-dom";
+import { loginRequest } from "../Api/Api_admin/Login";
 import { useAuth } from "../Authcontext";
 import "../Css/Login.css";
 
@@ -97,6 +97,9 @@ function LoginPantalla() {
                         value={cargando ? "Verificando..." : "Iniciar"}
                         disabled={cargando}
                     />
+                    <div className="registrarse">
+                        Quiero <Link to="/registrar" className="a">Registrarme</Link>
+                    </div>
                 </form>
             </div>
         </div>

@@ -11,12 +11,10 @@ import { useAuth } from "./Authcontext";
 function RutaProtegida({ children, roles = [] }) {
     const { usuario } = useAuth();
 
-    // No autenticado → al login
     if (!usuario) {
         return <Navigate to="/" replace />;
     }
 
-    // Rol no permitido → al login (podrías redirigir a /403 si lo prefieres)
     if (roles.length > 0 && !roles.includes(usuario.Nombre_rol)) {
         return <Navigate to="/" replace />;
     }

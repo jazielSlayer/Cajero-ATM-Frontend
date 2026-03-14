@@ -13,7 +13,7 @@ import Actividad       from "./pantallas/actividad";
 import Ayuda           from "./pantallas/ayuda";
 import Admin           from "./pantallas/pantallas de administradore/admin";
 import Operador        from "./pantallas/pantallas de administradore/operador";
-
+import Registrar from "./pantallas/Registrar";
 createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <AuthProvider>
@@ -21,7 +21,7 @@ createRoot(document.getElementById("root")).render(
                 <Routes>
                     {/* Pública */}
                     <Route path="/" element={<LoginPantalla />} />
-
+                    <Route path="/registrar/" element={<Registrar />} />
                     {/* ── Rutas de Cliente ── */}
                     <Route path="/cliente/" element={
                         <RutaProtegida roles={["Cliente"]}>

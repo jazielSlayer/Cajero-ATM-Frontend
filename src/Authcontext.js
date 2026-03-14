@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
         try {
             /**guarda los datos del usuario en el storage */
             const guardado = sessionStorage.getItem("usuario_atm");
-            console.log(guardado);
+            
             return guardado ? JSON.parse(guardado) : null;
         } catch {
             return null;

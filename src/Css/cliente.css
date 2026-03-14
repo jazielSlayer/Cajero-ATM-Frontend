@@ -1,21 +1,19 @@
+/* ── Importar Tabler Icons ── */
+@import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css");
+
 .cliente {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     min-height: 100vh;
-    padding-top: 4rem; /* account for fixed header height */
+    padding-top: 4rem;
     padding-bottom: 40px;
-    /* leave room for sidebar by default */
     margin-left: 4rem;
 }
-
-/* when sidebar is expanded */
-/*.cliente.sidebar-open {
-    margin-left: 18.75rem; 
-}*/
 
 .titulo {
     text-align: center;
     margin-top: 20px;
-    color: rgb(0, 0, 0);
+    color: #000;
     font-size: 2rem;
 }
 
@@ -24,53 +22,189 @@
     justify-content: space-around;
     flex-wrap: wrap;
     margin: 20px;
-    /* ensure cards clear header */
     margin-top: 0;
+    gap: 20px;
 }
 
-p {
-    color: rgb(255, 255, 255);
+p { color: #fff; }
+
+/* ── Holographic base ── */
+.holo-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1a2e 40%, #16213e 70%, #0f3460 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05),
+        0 8px 32px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(114, 9, 183, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.account-info,
-.card-info {
-    
-    /*background: linear-gradient(135deg, #5e60ce 0%, #9d4edd 50%, #7400b8 100%);*/
-    background: linear-gradient(135deg, #7209b7 0%, #4361ee 50%, #4cc9f0 100%);
-    padding: 20px;
-    border-radius: 8px;
+.holo-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.1),
+        0 16px 48px rgba(0,0,0,0.7),
+        0 0 80px rgba(76, 201, 240, 0.2),
+        0 0 120px rgba(114, 9, 183, 0.2);
+}
+
+/* Capa holográfica animada */
+.holo-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 20%,
+        rgba(114, 9, 183, 0.08) 30%,
+        rgba(67, 97, 238, 0.12) 40%,
+        rgba(76, 201, 240, 0.10) 50%,
+        rgba(247, 37, 133, 0.08) 60%,
+        rgba(114, 9, 183, 0.06) 70%,
+        transparent 80%
+    );
+    background-size: 200% 200%;
+    animation: holoShift 4s ease infinite;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
+}
+
+@keyframes holoShift {
+    0%   { background-position: 0% 0%; opacity: 0.6; }
+    50%  { background-position: 100% 100%; opacity: 1; }
+    100% { background-position: 0% 0%; opacity: 0.6; }
+}
+
+/* Todo el contenido sobre la capa holo */
+.holo-card > *:not(.holo-shine) {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Cuenta info ── */
+.account-info {
     width: 45%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin: 10px 0;
 }
 
-.account-info h2,
-.card-info h2 {
+.account-info h2 {
+    color: #fff;
     margin-bottom: 10px;
-    color: #ffffff;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
-.historial {
-    margin: 20px;
+.label {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    margin-right: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-.historial h2 {
-    color: rgb(0, 0, 0);
-    margin-bottom: 10px;
+/* ── Tarjeta banco ── */
+.card-info {
+    width: 45%;
 }
 
-tr th  {
-    color: rgb(0, 0, 0);
+.tarjeta-banco {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a0533 30%, #0f3460 70%, #0d0d0d 100%) !important;
 }
 
-td {
-    color: rgb(5, 5, 5);
+.chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 32px;
+    background: linear-gradient(135deg, #c9a84c, #f5d06e, #b8860b);
+    border-radius: 6px;
+    font-size: 1.1rem;
+    color: #3a2800;
+    box-shadow: 0 2px 8px rgba(201,168,76,0.4);
 }
+
+.tarjeta-numero {
+    font-size: 1.25rem;
+    letter-spacing: 0.18em;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+    margin: 12px 0;
+}
+
+.tarjeta-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.label-small {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.tarjeta-titular,
+.tarjeta-venc,
+.tarjeta-tipo {
+    font-size: 0.85rem;
+    color: #fff;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* ── Header row (título + botón ocultar) ── */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.btn-ocultar {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    padding: 5px 8px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s, color 0.2s;
+    backdrop-filter: blur(4px);
+}
+
+.btn-ocultar:hover {
+    background: rgba(76, 201, 240, 0.2);
+    color: #4cc9f0;
+    border-color: #4cc9f0;
+}
+
+/* ── Historial ── */
+.historial { margin: 20px; }
+
+.historial h2 { color: #000; margin-bottom: 10px; }
 
 .historial table {
     width: 100%;
     border-collapse: collapse;
-    background: rgba(71, 71, 71, 0.636);
+    background: rgba(0, 0, 0, 0.921);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     border-radius: 10px;
 }
@@ -82,26 +216,70 @@ td {
     border-bottom: 1px solid #eeeeee5a;
 }
 
-.historial th {
-    background: #f4f4f45e;
+.historial th { background: #000; }
+
+td:hover {
+    border-color: #fff;
+    color: #000;
+    background: #fff;
+    transition: .5s;
+    border-color: black;
 }
-.monto-positivo { color: #2ecc71; font-weight: bold; }
-.monto-negativo { color: #e74c3c; font-weight: bold; }
-.bienvenida { padding: 1rem; }
+
+/* ── Tabla responsive ── */
+.tabla-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+}
+
+
+
 .loading, .error { padding: 2rem; text-align: center; }
 
-@media (max-width: 768px) {
+/* ── Responsive ── */
+@media (max-width: 900px) {
     .account-info,
-    .card-info {
-        width: 90%;
+    .card-info { width: 90%; }
+}
+
+@media (max-width: 650px) {
+    .tabla-responsive table,
+    .tabla-responsive thead,
+    .tabla-responsive tbody,
+    .tabla-responsive th,
+    .tabla-responsive td,
+    .tabla-responsive tr { display: block; }
+
+    .tabla-responsive thead { display: none; }
+
+    .tabla-responsive tr {
+        margin-bottom: 12px;
+        border: 1px solid #ffffff2a;
+        border-radius: 8px;
+        padding: 8px;
     }
+
+    .tabla-responsive td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        border-bottom: 1px solid #ffffff15;
+    }
+
+    .tabla-responsive td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #aaa;
+        margin-right: 10px;
+        white-space: nowrap;
+    }
+
+    .tarjeta-numero { font-size: 1rem; letter-spacing: 0.12em; }
 }
 
 @media (max-width: 500px) {
-    /* align content on small screens when sidebar overlays or disappears */
     .cliente,
-    .cliente.sidebar-open {
-        margin-left: 0;
-    }
+    .cliente.sidebar-open { margin-left: 0; }
 }
-

@@ -1,5 +1,5 @@
-import "../Css/cliente.css";
-import ImportarNav from "../Importar nav/importar-nav";
+import "../../Css/cliente.css";
+import ImportarNav from "../../Importar nav/importar-nav";
 /** numero de cuenta saldo estado
  * numero de tarjeta tipo estado y fecha de vencimiento
  * historial de transacciones y tipo de transaccion

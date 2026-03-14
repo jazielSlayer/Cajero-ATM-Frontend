@@ -1,5 +1,5 @@
-import "../Css/Depositar.css"
-import ImportarNav from "../Importar nav/importar-nav";
+import "../../Css/Depositar.css"
+import ImportarNav from "../../Importar nav/importar-nav";
 
 
 function DepositarDinero() {

@@ -6,11 +6,12 @@ import { AuthProvider } from "./Authcontext";
 import RutaProtegida   from "./Rutaprotegida";
 
 import LoginPantalla   from "./pantallas/login";
-import Cliente         from "./pantallas/cliente";
-import DepositarDinero from "./pantallas/depositar-dinero";
-import RetirarDinero   from "./pantallas/retirar_dinero";
-import Actividad       from "./pantallas/actividad";
-import Ayuda           from "./pantallas/ayuda";
+import Cliente         from "./pantallas/Cliente/cliente";
+import DepositarDinero from "./pantallas/Cliente/depositar-dinero";
+import RetirarDinero   from "./pantallas/Cliente/retirar_dinero";
+import Actividad       from "./pantallas/Cliente/actividad";
+import Ayuda           from "./pantallas/Cliente/ayuda";
+
 import Admin           from "./pantallas/pantallas de administradore/admin";
 import Operador        from "./pantallas/pantallas de administradore/operador";
 import Registrar from "./pantallas/Registrar";

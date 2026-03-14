@@ -9,7 +9,7 @@ function LoginPantalla () {
                 <div className="username">
                     <input type="text" required>
                     </input>
-                    <label>Usuario</label>
+                    <label>Pin</label>
                 </div>
                 <div className="username">
                     <input type="password" required>

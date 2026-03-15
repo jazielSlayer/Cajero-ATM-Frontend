@@ -1,7 +1,7 @@
 import { API_URL } from "../Api";
 
 export const realizarDeposito = async (datos) => {
-    const response = await fetch(`${API_URL}/transacciones/deposito`, {
+    const response = await fetch(`${API_URL}/deposito`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -49,7 +49,7 @@ export const realizarDeposito = async (datos) => {
  * @returns {Promise<{ tasas: Array<{Moneda_origen, Moneda_destino, Tasa, Tipo_tasa, Fecha_actualizacion}> }>}
  */
 export const consultarTasas = async () => {
-    const response = await fetch(`${API_URL}/transacciones/tasas`);
+    const response = await fetch(`${API_URL}/tasas`);
     const data = await response.json();
  
     if (!response.ok) {

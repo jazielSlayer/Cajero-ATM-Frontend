@@ -158,7 +158,7 @@
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
-.dep-tipo-icon  { font-size: 2rem; }
+.dep-tipo-icon  { font-size: 2rem; color: white; }
 .dep-tipo-label { font-weight: 600; font-size: .95rem; color: var(--dep-text); }
 .dep-tipo-desc  { font-size: .78rem; color: var(--dep-muted); line-height: 1.4; }
 

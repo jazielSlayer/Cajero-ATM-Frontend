@@ -3,6 +3,7 @@ import "../../Css/Depositar.css";
 import ImportarNav from "../../Importar nav/importar-nav";
 import { realizarDeposito, consultarTasas } from "../../Api/Api_cliente/Hacer_Transaccion";
 import { getDatosUsuario } from "../../Api/Api_cliente/Datos_cliente";
+import { IconExchange, IconReportMoneyFilled } from "@tabler/icons-react";
 
 // ── Monedas soportadas ────────────────────────────────────────────────────────
 const MONEDAS = [
@@ -26,13 +27,13 @@ const TIPOS_DEPOSITO = [
         id: "directo",
         label: "Depósito Directo",
         desc: "Acredita en la misma moneda que entregas",
-        icon: "⬇️",
+        icon: <IconReportMoneyFilled />
     },
     {
         id: "conversion",
         label: "Depósito con Conversión",
         desc: "Convierte a otra moneda al acreditar",
-        icon: "💱",
+        icon: <IconExchange />
     },
 ];
 

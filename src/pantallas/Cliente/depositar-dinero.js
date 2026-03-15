@@ -3,9 +3,9 @@ import "../../Css/Depositar.css";
 import ImportarNav from "../../Importar nav/importar-nav";
 import { realizarDeposito, consultarTasas } from "../../Api/Api_cliente/Hacer_Transaccion";
 import { getDatosUsuario } from "../../Api/Api_cliente/Datos_cliente";
-import { IconExchange, IconReportMoneyFilled } from "@tabler/icons-react";
+import { IconExchange, IconReportMoneyFilled, IconThumbUpFilled } from "@tabler/icons-react";
 
-// ── Monedas soportadas ────────────────────────────────────────────────────────
+
 const MONEDAS = [
     { codigo: "BOB", nombre: "Boliviano",      simbolo: "Bs",  bandera: "🇧🇴" },
     { codigo: "USD", nombre: "Dólar",           simbolo: "$",   bandera: "🇺🇸" },
@@ -21,7 +21,7 @@ function getMoneda(codigo) {
     return MONEDAS.find((m) => m.codigo === codigo) || MONEDAS[0];
 }
 
-// ── Tipos de depósito ─────────────────────────────────────────────────────────
+
 const TIPOS_DEPOSITO = [
     {
         id: "directo",
@@ -37,9 +37,7 @@ const TIPOS_DEPOSITO = [
     },
 ];
 
-// ── Pasos del formulario ──────────────────────────────────────────────────────
-// Se eliminó "Autenticación" del stepper visible ya que correo y tarjeta
-// se cargan automáticamente. Solo quedan contraseña y PIN.
+
 const PASOS = ["Tipo", "Monedas", "Monto", "Seguridad", "Confirmar"];
 
 export default function DepositarDinero() {
@@ -58,7 +56,7 @@ export default function DepositarDinero() {
     const [resultado, setResultado] = useState(null);
     const [error, setError]         = useState("");
 
-    // ── Datos cargados automáticamente desde sessionStorage ───────────────────
+
     const [correo, setCorreo]     = useState("");
     const [tarjeta, setTarjeta]   = useState("");
     const [loadingSesion, setLoadingSesion] = useState(true);
@@ -95,7 +93,6 @@ export default function DepositarDinero() {
         if (tipoDeposito === "directo") setDest(monedaOrigen);
     }, [tipoDeposito, monedaOrigen]);
 
-    // ── Tasa de referencia para el par seleccionado ───────────────────────────
     const tasaRef = tasas.find(
         (t) =>
             t.Moneda_origen  === monedaOrigen &&
@@ -119,14 +116,14 @@ export default function DepositarDinero() {
             ? montoBOB
             : montoBOB / (tasaDestRef?.Tasa || 1);
 
-    // ── Envío ─────────────────────────────────────────────────────────────────
+
     const handleSubmit = async () => {
         setError("");
         setLoading(true);
         try {
             const resp = await realizarDeposito({
-                correo,                      // ← desde sessionStorage
-                numero_tarjeta: tarjeta,     // ← desde sessionStorage
+                correo,                      
+                numero_tarjeta: tarjeta,     
                 contrasena,
                 pin,
                 monto:          montoNum,
@@ -151,7 +148,6 @@ export default function DepositarDinero() {
         setResultado(null); setError("");
     };
 
-    // ── Pantalla de carga / error de sesión ───────────────────────────────────
     if (loadingSesion) {
         return (
             <div className="contenedor">
@@ -174,7 +170,6 @@ export default function DepositarDinero() {
         );
     }
 
-    // ── Render ────────────────────────────────────────────────────────────────
     return (
         <div className="contenedor">
             <ImportarNav />
@@ -198,9 +193,7 @@ export default function DepositarDinero() {
                     </div>
                 )}
 
-                {/* ═══════════════════════════════════════════════════════════
-                    PASO 0 — Tipo de depósito
-                ════════════════════════════════════════════════════════════ */}
+                
                 {paso === 0 && (
                     <div className="dep-card dep-fade">
                         <h2 className="dep-card-title">¿Qué tipo de depósito deseas realizar?</h2>
@@ -223,9 +216,7 @@ export default function DepositarDinero() {
                     </div>
                 )}
 
-                {/* ═══════════════════════════════════════════════════════════
-                    PASO 1 — Monedas + monto
-                ════════════════════════════════════════════════════════════ */}
+                
                 {paso === 1 && (
                     <div className="dep-card dep-fade">
                         <h2 className="dep-card-title">Moneda y monto</h2>
@@ -378,10 +369,7 @@ export default function DepositarDinero() {
                     </div>
                 )}
 
-                {/* ═══════════════════════════════════════════════════════════
-                    PASO 2 — Seguridad (solo contraseña y PIN)
-                    Correo y tarjeta ya vienen de sessionStorage
-                ════════════════════════════════════════════════════════════ */}
+                
                 {paso === 2 && (
                     <div className="dep-card dep-fade">
                         <h2 className="dep-card-title">Verificación de seguridad</h2>
@@ -436,9 +424,7 @@ export default function DepositarDinero() {
                     </div>
                 )}
 
-                {/* ═══════════════════════════════════════════════════════════
-                    PASO 3 — Resumen / Confirmar
-                ════════════════════════════════════════════════════════════ */}
+                
                 {paso === 3 && (
                     <div className="dep-card dep-fade">
                         <h2 className="dep-card-title">Resumen del depósito</h2>
@@ -473,17 +459,15 @@ export default function DepositarDinero() {
                     </div>
                 )}
 
-                {/* ═══════════════════════════════════════════════════════════
-                    PASO 5 — Éxito
-                ════════════════════════════════════════════════════════════ */}
+               
                 {paso === 5 && resultado && (
                     <div className="dep-card dep-card--success dep-fade">
-                        <div className="dep-success-icon">✅</div>
-                        <h2 className="dep-card-title">¡Depósito exitoso!</h2>
+                        
+                        <h2 className="dep-card-title">¡Depósito exitoso!   <IconThumbUpFilled/></h2>
                         <p className="dep-success-msg">{resultado.mensaje}</p>
 
                         <div className="dep-resumen dep-resumen--success">
-                            <ResumenFila label="ID transacción"   valor={`#${resultado.transaccionId}`} />
+                            
                             <ResumenFila label="Monto recibido"   valor={resultado.detalle?.montoRecibido} />
                             <ResumenFila label="Monto acreditado" valor={resultado.detalle?.montoAcreditado} />
                             {resultado.detalle?.equivalenteBOB && (
@@ -507,7 +491,6 @@ export default function DepositarDinero() {
     );
 }
 
-// ── Componente auxiliar ───────────────────────────────────────────────────────
 function ResumenFila({ label, valor }) {
     return (
         <div className="dep-resumen-fila">

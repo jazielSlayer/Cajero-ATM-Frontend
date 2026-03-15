@@ -1,3 +1,470 @@
-.Depositar{
-    color: black;
+/* ═══════════════════════════════════════════════════════════════════
+   Depositar.css  — Paleta NEGRO Y BLANCO puro (como lo estabas haciendo)
+═══════════════════════════════════════════════════════════════════ */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap");
+
+/* ── Variables ─────────────────────────────────────────────────── */
+:root {
+    --dep-bg:        #050505;
+    --dep-card:      #0f0f0f;
+    --dep-primary:   #ffffff;
+    --dep-accent:    #000000;
+    --dep-danger:    #ffffff;
+    --dep-border:    #1f1f1f;
+    --dep-text:      #ffffff;
+    --dep-muted:     #bdbdbd;
+    --dep-radius:    14px;
+    --dep-shadow:    0 4px 24px rgba(0, 0, 0, 0.65);
+}
+
+/* ── Layout base ───────────────────────────────────────────────── */
+.dep-wrapper {
+    min-height: 100vh;
+    background: var(--dep-bg);
+    font-family: "DM Sans", sans-serif;
+    color: var(--dep-text);
+}
+
+.dep-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+/* ── Stepper ───────────────────────────────────────────────────── */
+.dep-stepper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.dep-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .25rem;
+    opacity: .38;
+    transition: opacity .3s;
+}
+
+.dep-step--active { opacity: 1; }
+
+.dep-step-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--dep-border);
+    color: var(--dep-primary);
+    font-size: .8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .3s, color .3s;
+}
+
+.dep-step--active .dep-step-circle {
+    background: var(--dep-primary);
+    color: var(--dep-accent);
+}
+
+.dep-step--done .dep-step-circle {
+    background: var(--dep-accent);
+    color: var(--dep-primary);
+}
+
+.dep-step-label {
+    font-size: .7rem;
+    font-weight: 500;
+    color: #555555;
+}
+
+.dep-step--active .dep-step-label,
+.dep-step--done  .dep-step-label  { 
+    color: #000000;
+}
+
+/* ── Card ──────────────────────────────────────────────────────── */
+.dep-card {
+    background: var(--dep-card);
+    border-radius: var(--dep-radius);
+    box-shadow: var(--dep-shadow);
+    padding: 2rem 2rem 1.75rem;
+    border: 1px solid var(--dep-border);
+}
+
+.dep-card--success {
+    border-top: 4px solid var(--dep-primary);
+}
+
+.dep-card-title {
+    font-family: "DM Serif Display", serif;
+    font-size: 1.45rem;
+    font-weight: 400;
+    margin: 0 0 .5rem;
+    color: var(--dep-primary);
+}
+
+.dep-card-sub {
+    color: var(--dep-muted);
+    font-size: .9rem;
+    margin: 0 0 1.5rem;
+}
+
+/* ── Fade animation ────────────────────────────────────────────── */
+.dep-fade {
+    animation: depFade .35s ease;
+}
+
+@keyframes depFade {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Tipo de depósito ──────────────────────────────────────────── */
+.dep-tipo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0 1.75rem;
+}
+
+.dep-tipo-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: .5rem;
+    padding: 1.4rem 1rem;
+    border: 2px solid var(--dep-border);
+    border-radius: var(--dep-radius);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+}
+
+.dep-tipo-btn:hover {
+    border-color: var(--dep-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.dep-tipo-btn--sel {
+    border-color: var(--dep-primary);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.dep-tipo-icon  { font-size: 2rem; }
+.dep-tipo-label { font-weight: 600; font-size: .95rem; color: var(--dep-text); }
+.dep-tipo-desc  { font-size: .78rem; color: var(--dep-muted); line-height: 1.4; }
+
+/* ── Monedas ───────────────────────────────────────────────────── */
+.dep-moneda-row {
+    display: flex;
+    align-items: flex-end;
+    gap: .75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.dep-moneda-col { flex: 1; min-width: 160px; }
+
+.dep-arrow {
+    font-size: 1.5rem;
+    color: var(--dep-primary);
+    padding-bottom: .5rem;
+    flex-shrink: 0;
+}
+
+.dep-label {
+    display: block;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--dep-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: .4rem;
+}
+
+.dep-select-wrap { position: relative; }
+
+.dep-select {
+    width: 100%;
+    padding: .65rem .9rem;
+    border: 1.5px solid var(--dep-border);
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: .9rem;
+    background: var(--dep-card);
+    color: var(--dep-text);
+    appearance: none;
+    cursor: pointer;
+    transition: border-color .2s;
+}
+
+.dep-select:focus {
+    outline: none;
+    border-color: var(--dep-primary);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .15);
+}
+
+/* ── Tipo de tasa / método ─────────────────────────────────────── */
+.dep-tasa-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.dep-radio-group {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+.dep-radio {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .85rem;
+    border: 1.5px solid var(--dep-border);
+    border-radius: 999px;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+}
+
+.dep-radio input { display: none; }
+
+.dep-radio--sel {
+    border-color: var(--dep-accent);
+    background: rgb(245, 245, 245);
+    color: var(--dep-card);
+}
+
+/* ── Monto ─────────────────────────────────────────────────────── */
+.dep-monto-wrap { margin-bottom: 1.25rem; }
+
+.dep-monto-input-row {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--dep-border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color .2s;
+}
+
+.dep-monto-input-row:focus-within {
+    border-color: var(--dep-primary);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .15);
+}
+
+.dep-simbolo {
+    padding: .75rem 1rem;
+    background: var(--dep-border);
+    font-weight: 600;
+    color: var(--dep-text);
+    border-right: 1px solid var(--dep-border);
+}
+
+.dep-monto-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: .75rem 1rem;
+    font-family: "DM Sans", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--dep-text);
+    background: var(--dep-card);
+}
+
+.dep-codigo {
+    padding: .75rem 1rem;
+    background: var(--dep-border);
+    font-weight: 600;
+    font-size: .85rem;
+    color: var(--dep-muted);
+    border-left: 1px solid var(--dep-border);
+}
+
+/* ── Preview ───────────────────────────────────────────────────── */
+.dep-preview {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--dep-border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: .9rem;
+}
+
+.dep-preview-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .4rem;
+    color: var(--dep-text);
+}
+
+.dep-preview-loading { color: var(--dep-muted); font-style: italic; }
+
+.dep-preview-tasa {
+    margin-top: .5rem;
+    font-size: .78rem;
+    color: var(--dep-muted);
+}
+
+/* ── Formulario autenticación ──────────────────────────────────── */
+.dep-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.dep-field { display: flex; flex-direction: column; gap: .4rem; }
+
+.dep-input {
+    padding: .7rem .9rem;
+    border: 1.5px solid var(--dep-border);
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: .9rem;
+    color: #000000;                   
+    background: #ffffff;
+    transition: border-color .2s;
+}
+
+.dep-input:focus {
+    outline: none;
+    border-color: var(--dep-primary);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .15);
+}
+
+.dep-input--pin { letter-spacing: .2em; }
+
+/* ── Resumen ───────────────────────────────────────────────────── */
+.dep-resumen {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--dep-border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.dep-resumen--success { 
+    background: rgba(255, 255, 255, 0.08); 
+    border-color: var(--dep-accent); 
+}
+
+.dep-resumen-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: .45rem 0;
+    border-bottom: 1px solid var(--dep-border);
+    font-size: .9rem;
+}
+
+.dep-resumen--success .dep-resumen-fila { border-color: var(--dep-border); }
+
+.dep-resumen-fila:last-child { border-bottom: none; }
+
+.dep-resumen-label { color: var(--dep-muted); }
+.dep-resumen-valor { font-weight: 600; color: var(--dep-text); }
+
+/* ── Error ─────────────────────────────────────────────────────── */
+.dep-error {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--dep-primary);
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    color: var(--dep-danger);
+    font-size: .88rem;
+    margin-bottom: 1rem;
+}
+
+/* ── Éxito ─────────────────────────────────────────────────────── */
+.dep-success-icon { font-size: 3.5rem; text-align: center; margin-bottom: .5rem; }
+.dep-success-msg  { text-align: center; color: var(--dep-muted); margin-bottom: 1.5rem; }
+
+/* ── Botones ───────────────────────────────────────────────────── */
+.dep-btn-row {
+    display: flex;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-top: .5rem;
+}
+
+.dep-btn-next,
+.dep-btn-confirm {
+    flex: 1;
+    padding: .8rem 1.5rem;
+    border: 1.5px solid var(--dep-accent);
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: .95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, opacity .2s, transform .1s;
+}
+
+.dep-btn-next {
+    background: var(--dep-primary);
+    color: var(--dep-accent);
+}
+
+.dep-btn-next:hover:not(:disabled) { 
+    background: var(--dep-accent); 
+    color: var(--dep-primary);
+    border-color: var(--dep-primary);
+}
+
+.dep-btn-confirm {
+    background: var(--dep-accent);
+    color: var(--dep-primary);
+}
+
+.dep-btn-confirm:hover:not(:disabled) { 
+    background: rgba(255, 255, 255, 0.3); 
+}
+
+.dep-btn-next:disabled,
+.dep-btn-confirm:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.dep-btn-back {
+    padding: .8rem 1.2rem;
+    background: transparent;
+    border: 1.5px solid var(--dep-border);
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--dep-muted);
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+}
+
+.dep-btn-back:hover {
+    border-color: var(--dep-primary);
+    color: var(--dep-primary);
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+    .dep-card { padding: 1.5rem 1.25rem; }
+    .dep-tipo-grid { grid-template-columns: 1fr; }
+    .dep-form-grid { grid-template-columns: 1fr; }
+    .dep-moneda-row { flex-direction: column; }
+    .dep-arrow { display: none; }
+    .dep-btn-row { flex-direction: column-reverse; }
+    .dep-btn-back { text-align: center; }
 }

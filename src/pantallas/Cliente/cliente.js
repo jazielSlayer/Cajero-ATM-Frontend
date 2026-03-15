@@ -12,6 +12,7 @@ function Cliente() {
 
     useEffect(() => {
         const sesion = sessionStorage.getItem("usuario_atm");
+        
         if (!sesion) { setError("No se encontró el usuario en sesión."); setLoading(false); return; }
         const { nombre_completo } = JSON.parse(sesion);
         if (!nombre_completo) { setError("No se encontró el nombre del usuario en sesión."); setLoading(false); return; }
@@ -24,7 +25,7 @@ function Cliente() {
     if (error)   return <div className="cliente"><ImportarNav /><p className="error">{error}</p></div>;
 
     const { usuario, transferencias, depositos, retiros } = datos;
-
+    
     const tarjetaMascarada = usuario.tarjeta.numero_tarjeta
         ?  usuario.tarjeta.numero_tarjeta
         : "**** **** ****";

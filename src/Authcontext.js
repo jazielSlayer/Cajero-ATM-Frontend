@@ -9,6 +9,8 @@ export function AuthProvider({ children }) {
             const guardado = sessionStorage.getItem("usuario_atm");
             
             return guardado ? JSON.parse(guardado) : null;
+            
+            
         } catch {
             return null;
         }
@@ -17,7 +19,9 @@ export function AuthProvider({ children }) {
     const guardarSesion = (datos) => {
         sessionStorage.setItem("usuario_atm", JSON.stringify(datos));
         setUsuario(datos);
+       
     };
+    
 
     const cerrarSesion = () => {
         sessionStorage.removeItem("usuario_atm");

@@ -5,7 +5,7 @@ import ImportarNav from "../../Importar nav/importar-nav";
 function RetirarDinero() {
     
     return (
-        <div className="Depositar">
+        <div className="contenedor">
             <ImportarNav />
             <h1>retirar dinero</h1>
         </div>

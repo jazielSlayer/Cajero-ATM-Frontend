@@ -23,7 +23,7 @@ function Cliente() {
     if (loading) return <div className="cliente"><ImportarNav /><p className="loading">Cargando datos...</p></div>;
     if (error)   return <div className="cliente"><ImportarNav /><p className="error">{error}</p></div>;
 
-    const { usuario, transacciones, depositos } = datos;
+    const { usuario, transferencias, depositos, retiros } = datos;
 
     const tarjetaMascarada = usuario.tarjeta.numero_tarjeta
         ?  usuario.tarjeta.numero_tarjeta
@@ -104,32 +104,35 @@ function Cliente() {
                     </div>
                 </div>
             </div>
-
+            
             {/* Tabla transacciones */}
             <div className="historial">
-                <h2>Últimas transacciones</h2>
-                {transacciones.length === 0 ? (
+                <h2>Transacciones</h2>
+                <h2>Transferencias</h2>
+                {transferencias.length === 0 ? (
                     <p className="sin-datos">No hay transacciones registradas.</p>
                 ) : (
                     <div className="tabla-responsive">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Fecha</th><th>Tipo</th><th>Método</th>
-                                    <th>Descripción</th><th>Monto</th><th>Destinatario</th><th>Estado</th>
+                                    <th>Fecha</th><th>Método</th><th>Monto</th>
+                                    <th>Descripción</th><th>Destinatario</th><th>Cuenta destino</th><th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {transacciones.map((t) => (
+                                {transferencias.map((t) => (
                                     <tr key={t.transaccion_id}>
                                         <td data-label="Fecha">{new Date(t.Fecha_transaccion).toLocaleDateString("es-ES")}</td>
-                                        <td data-label="Tipo">{t.tipo_transaccion}</td>
+                                        
                                         <td data-label="Método">{t.Metodo_transaccion}</td>
-                                        <td data-label="Descripción">{t.Descripcion ?? "-"}</td>
                                         <td data-label="Monto" className="monto-negativo">
                                             -${Number(t.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
                                         </td>
+                                        <td data-label="Descripción">{t.Descripcion ?? "-"}</td>
+                                        
                                         <td data-label="Destinatario">{t.nombre_destinatario ?? "-"}</td>
+                                        <td data-label="Destinatario">{t.cuenta_destino }</td>
                                         <td data-label="Estado">{t.estado_transaccion}</td>
                                     </tr>
                                 ))}
@@ -138,7 +141,37 @@ function Cliente() {
                     </div>
                 )}
             </div>
-
+            {/* Tabla Retiros */}
+            <div className="historial">
+                <h2>Retiros</h2>
+                {retiros.length === 0 ? (
+                    <p className="sin-datos">No hay depósitos registrados.</p>
+                ) : (
+                    <div className="tabla-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th><th>Metodo</th><th>Monto</th>
+                                    <th>Descripcion</th><th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {retiros.map((r) => (
+                                    <tr key={r.transaccion_id}>
+                                        <td data-label="Fecha">{new Date(r.Fecha_transaccion).toLocaleDateString("es-ES")}</td>
+                                        <td data-label="Método">{r.Metodo_transaccion}</td>
+                                        <td data-label="Monto" className="monto-positivo">
+                                            +${Number(r.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
+                                        </td>
+                                        <td data-label="Descripción">{r.Descripcion ?? "-"}</td>
+                                        <td data-label="Estado">{r.estado_transaccion}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
             {/* Tabla depósitos */}
             <div className="historial">
                 <h2>Depósitos</h2>
@@ -150,7 +183,7 @@ function Cliente() {
                             <thead>
                                 <tr>
                                     <th>Fecha</th><th>Método</th><th>Monto</th>
-                                    <th>Saldo anterior</th><th>Saldo posterior</th><th>Estado</th>
+                                    <th>Descricion</th><th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -161,8 +194,8 @@ function Cliente() {
                                         <td data-label="Monto" className="monto-positivo">
                                             +${Number(d.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
                                         </td>
-                                        <td data-label="Saldo anterior">${Number(d.Saldo_anterior).toLocaleString("es-BO", { minimumFractionDigits: 2 })}</td>
-                                        <td data-label="Saldo posterior">${Number(d.Saldo_posterior).toLocaleString("es-BO", { minimumFractionDigits: 2 })}</td>
+                                        <td data-label="Descripción">{d.Descripcion ?? "-"}</td>
+                                       
                                         <td data-label="Estado">{d.estado_transaccion}</td>
                                     </tr>
                                 ))}

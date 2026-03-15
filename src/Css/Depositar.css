@@ -391,6 +391,7 @@
 
 /* ── Éxito ─────────────────────────────────────────────────────── */
 .dep-success-icon { font-size: 3.5rem; text-align: center; margin-bottom: .5rem; }
+.dep-success-check { font-size: 2.5rem; color: var(--dep-accent); }
 .dep-success-msg  { text-align: center; color: var(--dep-muted); margin-bottom: 1.5rem; }
 
 /* ── Botones ───────────────────────────────────────────────────── */
@@ -456,6 +457,112 @@
 .dep-btn-back:hover {
     border-color: var(--dep-primary);
     color: var(--dep-primary);
+}
+
+/* ── Divider ───────────────────────────────────────────────────── */
+.dep-divider {
+    height: 1px;
+    background: var(--dep-border);
+    margin: 1.25rem 0;
+}
+
+/* ── Opciones de moneda (retiro) ───────────────────────────────────────── */
+.dep-opciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: .85rem;
+    margin-bottom: 1.5rem;
+}
+
+.dep-opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .3rem;
+    padding: 1.1rem .75rem;
+    background: var(--dep-card);
+    border: 1.5px solid var(--dep-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color .2s, transform .15s, background .2s;
+    text-align: center;
+    color: var(--dep-text);
+    position: relative;
+}
+
+.dep-opcion:not(:disabled):hover {
+    border-color: var(--dep-primary);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.dep-opcion--insuf {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.dep-op-bandera  { font-size: 1.8rem; }
+.dep-op-codigo   { font-family: "DM Sans", sans-serif; font-size: 1.2rem; letter-spacing: .08em; color: var(--dep-primary); }
+.dep-op-nombre   { font-size: .7rem; color: var(--dep-muted); }
+.dep-op-recibe   { font-size: .8rem; margin-top: .3rem; color: var(--dep-text); }
+.dep-op-recibe strong { color: var(--dep-accent); }
+.dep-op-saldo    { font-size: .72rem; color: var(--dep-muted); }
+.dep-op-tasa     { font-size: .68rem; color: var(--dep-muted); }
+
+.dep-op-insuf-badge {
+    position: absolute;
+    top: .4rem; right: .4rem;
+    background: rgba(0, 0, 0, .2);
+    color: var(--dep-primary);
+    font-size: .62rem;
+    font-weight: 700;
+    padding: .15rem .4rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* ── Conversión / Resultados ───────────────────────────────────────────── */
+.dep-conv-tabla {
+    background: var(--dep-card);
+    border: 1px solid var(--dep-border);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.dep-conv-fila {
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 0;
+    font-size: .9rem;
+    border-bottom: 1px solid var(--dep-border);
+    color: var(--dep-muted);
+}
+
+.dep-conv-fila:last-child { border-bottom: none; }
+.dep-conv-fila strong { color: var(--dep-text); }
+.dep-conv-fila--dest strong { color: var(--dep-primary); font-size: 1rem; }
+
+/* ── Spinner ───────────────────────────────────────────────────────────── */
+.dep-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255,255,255,.3);
+    border-top-color: var(--dep-accent);
+    border-radius: 50%;
+    animation: depSpin .7s linear infinite;
+}
+
+.dep-spinner--sm {
+    width: 14px;
+    height: 14px;
+    border-color: rgba(255,255,255,.3);
+    border-top-color: var(--dep-accent);
+}
+
+@keyframes depSpin {
+    to { transform: rotate(360deg); }
 }
 
 /* ── Responsive ────────────────────────────────────────────────── */

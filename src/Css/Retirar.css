@@ -1,0 +1,544 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Retirar.css  — Tema oscuro / industrial con acento ámbar
+   Contrasta con el azul/verde claro de Depositar.css
+═══════════════════════════════════════════════════════════════════ */
+
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap");
+
+/* ── Variables ─────────────────────────────────────────────────── */
+:root {
+    --ret-bg:        #0f1117;
+    --ret-surface:   #181c26;
+    --ret-border:    #2a2f3f;
+    --ret-amber:     #f59e0b;
+    --ret-amber-d:   #d97706;
+    --ret-green:     #10b981;
+    --ret-red:       #ef4444;
+    --ret-text:      #e8eaf0;
+    --ret-muted:     #6b7280;
+    --ret-radius:    16px;
+    --ret-shadow:    0 8px 32px rgba(0, 0, 0, .5);
+}
+
+/* ── Base ──────────────────────────────────────────────────────── */
+.ret-wrapper {
+    min-height: 100vh;
+    background: var(--ret-bg);
+    font-family: "Outfit", sans-serif;
+    color: var(--ret-text);
+}
+
+.ret-container {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 5rem;
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+.ret-header {
+    text-align: center;
+    margin-bottom: 2.25rem;
+    position: relative;
+}
+
+.ret-header-graphic {
+    position: relative;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: .5rem;
+}
+
+.ret-header-bg-text {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 5.5rem;
+    color: rgba(245, 158, 11, .06);
+    letter-spacing: .12em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    user-select: none;
+    white-space: nowrap;
+}
+
+.ret-header-icon {
+    font-size: 2.75rem;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 14px rgba(245,158,11,.6));
+}
+
+.ret-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 2.4rem;
+    letter-spacing: .06em;
+    color: var(--ret-amber);
+    margin: 0 0 .3rem;
+    text-transform: uppercase;
+}
+
+.ret-subtitle {
+    color: var(--ret-muted);
+    font-size: .9rem;
+    margin: 0;
+}
+
+/* ── Stepper ───────────────────────────────────────────────────── */
+.ret-stepper {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.ret-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .3rem;
+    opacity: .3;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--ret-muted);
+    transition: opacity .3s;
+}
+
+.ret-step--act { opacity: 1; color: var(--ret-amber); }
+.ret-step--done { opacity: .7; color: var(--ret-green); }
+
+.ret-step-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--ret-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .8rem;
+    font-weight: 700;
+    transition: background .3s, color .3s;
+    color: var(--ret-muted);
+}
+
+.ret-step--act .ret-step-dot  { background: var(--ret-amber); color: #000; }
+.ret-step--done .ret-step-dot { background: var(--ret-green); color: #fff; }
+
+/* ── Card ──────────────────────────────────────────────────────── */
+.ret-card {
+    background: var(--ret-surface);
+    border: 1px solid var(--ret-border);
+    border-radius: var(--ret-radius);
+    padding: 2rem;
+    box-shadow: var(--ret-shadow);
+}
+
+.ret-card--warn    { border-top: 3px solid var(--ret-amber); }
+.ret-card--success { border-top: 3px solid var(--ret-green); }
+
+.ret-fade {
+    animation: retFade .35s ease;
+}
+
+@keyframes retFade {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.ret-card-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: .05em;
+    color: var(--ret-amber);
+    margin: 0 0 .4rem;
+}
+
+.ret-card-sub {
+    color: var(--ret-muted);
+    font-size: .9rem;
+    margin: 0 0 1.5rem;
+}
+
+/* ── Monto ─────────────────────────────────────────────────────── */
+.ret-monto-block { margin-bottom: 1.25rem; }
+
+.ret-monto-row {
+    display: flex;
+    align-items: center;
+    background: #0f1117;
+    border: 2px solid var(--ret-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color .2s;
+}
+
+.ret-monto-row:focus-within {
+    border-color: var(--ret-amber);
+    box-shadow: 0 0 0 3px rgba(245,158,11,.15);
+}
+
+.ret-monto-prefix {
+    padding: 0 .9rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--ret-amber);
+    border-right: 1px solid var(--ret-border);
+}
+
+.ret-monto-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ret-text);
+    font-family: "Outfit", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: .8rem 1rem;
+}
+
+.ret-monto-input::placeholder { color: var(--ret-border); }
+
+.ret-moneda-select {
+    background: #0f1117;
+    border: none;
+    border-left: 1px solid var(--ret-border);
+    color: var(--ret-amber);
+    font-family: "Outfit", sans-serif;
+    font-size: .9rem;
+    font-weight: 600;
+    padding: 0 .8rem;
+    height: 100%;
+    cursor: pointer;
+    outline: none;
+}
+
+/* ── Pills (tasa / método) ─────────────────────────────────────── */
+.ret-opts-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.ret-opt-group { display: flex; flex-direction: column; gap: .4rem; }
+
+.ret-opt-label {
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--ret-muted);
+}
+
+.ret-pills { display: flex; gap: .4rem; }
+
+.ret-pill {
+    padding: .35rem .9rem;
+    background: transparent;
+    border: 1.5px solid var(--ret-border);
+    border-radius: 999px;
+    color: var(--ret-muted);
+    font-family: "Outfit", sans-serif;
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .2s, color .2s, background .2s;
+}
+
+.ret-pill:hover { border-color: var(--ret-amber); color: var(--ret-amber); }
+
+.ret-pill--sel {
+    border-color: var(--ret-amber);
+    background: rgba(245,158,11,.1);
+    color: var(--ret-amber);
+}
+
+/* ── Divider ───────────────────────────────────────────────────── */
+.ret-divider {
+    height: 1px;
+    background: var(--ret-border);
+    margin: 1.25rem 0;
+}
+
+.ret-section-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: .08em;
+    color: var(--ret-muted);
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+}
+
+/* ── Credentials ───────────────────────────────────────────────── */
+.ret-creds-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.ret-field { display: flex; flex-direction: column; gap: .4rem; }
+
+.ret-label {
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--ret-muted);
+}
+
+.ret-input {
+    background: #0f1117;
+    border: 1.5px solid var(--ret-border);
+    border-radius: 8px;
+    color: var(--ret-text);
+    font-family: "Outfit", sans-serif;
+    font-size: .95rem;
+    padding: .7rem .9rem;
+    transition: border-color .2s;
+}
+
+.ret-input:focus {
+    outline: none;
+    border-color: var(--ret-amber);
+    box-shadow: 0 0 0 3px rgba(245,158,11,.1);
+}
+
+.ret-input--pin { letter-spacing: .25em; }
+
+/* ── Opciones de moneda ────────────────────────────────────────── */
+.ret-opciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: .85rem;
+    margin-bottom: 1.5rem;
+}
+
+.ret-opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .3rem;
+    padding: 1.1rem .75rem;
+    background: #0f1117;
+    border: 1.5px solid var(--ret-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color .2s, transform .15s, background .2s;
+    text-align: center;
+    color: var(--ret-text);
+    position: relative;
+}
+
+.ret-opcion:not(:disabled):hover {
+    border-color: var(--ret-amber);
+    background: rgba(245,158,11,.06);
+    transform: translateY(-2px);
+}
+
+.ret-opcion--insuf {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.ret-op-bandera  { font-size: 1.8rem; }
+.ret-op-codigo   { font-family: "Bebas Neue", sans-serif; font-size: 1.2rem; letter-spacing: .08em; color: var(--ret-amber); }
+.ret-op-nombre   { font-size: .7rem; color: var(--ret-muted); }
+.ret-op-recibe   { font-size: .8rem; margin-top: .3rem; color: var(--ret-text); }
+.ret-op-recibe strong { color: var(--ret-green); }
+.ret-op-saldo    { font-size: .72rem; color: var(--ret-muted); }
+.ret-op-tasa     { font-size: .68rem; color: var(--ret-muted); }
+
+.ret-op-insuf-badge {
+    position: absolute;
+    top: .4rem; right: .4rem;
+    background: rgba(239,68,68,.15);
+    color: var(--ret-red);
+    font-size: .62rem;
+    font-weight: 700;
+    padding: .15rem .4rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* ── Conversión ────────────────────────────────────────────────── */
+.ret-warn-icon {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: .5rem;
+}
+
+.ret-conv-tabla {
+    background: #0f1117;
+    border: 1px solid var(--ret-border);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.ret-conv-fila {
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 0;
+    font-size: .9rem;
+    border-bottom: 1px solid var(--ret-border);
+    color: var(--ret-muted);
+}
+
+.ret-conv-fila:last-child { border-bottom: none; }
+.ret-conv-fila strong { color: var(--ret-text); }
+.ret-conv-fila--dest strong { color: var(--ret-amber); font-size: 1rem; }
+
+/* ── Resultado ─────────────────────────────────────────────────── */
+.ret-success-ring {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(16,185,129,.12);
+    border: 2px solid var(--ret-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.ret-success-check {
+    font-size: 1.8rem;
+    color: var(--ret-green);
+}
+
+.ret-success-msg {
+    text-align: center;
+    color: var(--ret-muted);
+    font-size: .9rem;
+    margin: 0 0 1.5rem;
+}
+
+.ret-result-tabla {
+    background: #0f1117;
+    border: 1px solid rgba(16,185,129,.2);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.ret-result-fila {
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 0;
+    font-size: .9rem;
+    border-bottom: 1px solid var(--ret-border);
+    color: var(--ret-muted);
+}
+
+.ret-result-fila:last-child { border-bottom: none; }
+.ret-result-fila strong { color: var(--ret-text); }
+
+/* ── Error ─────────────────────────────────────────────────────── */
+.ret-error {
+    background: rgba(239,68,68,.1);
+    border: 1px solid rgba(239,68,68,.3);
+    border-radius: 8px;
+    color: var(--ret-red);
+    padding: .7rem 1rem;
+    font-size: .88rem;
+    margin-bottom: 1rem;
+}
+
+/* ── Botones ───────────────────────────────────────────────────── */
+.ret-btn-main {
+    width: 100%;
+    padding: .9rem;
+    background: var(--ret-amber);
+    color: #000;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: .08em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .2s, opacity .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.ret-btn-main:hover:not(:disabled) { background: var(--ret-amber-d); }
+.ret-btn-main:disabled { opacity: .45; cursor: not-allowed; }
+
+.ret-btn-confirm {
+    flex: 1;
+    padding: .85rem;
+    background: var(--ret-amber);
+    color: #000;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1rem;
+    letter-spacing: .06em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .2s, opacity .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.ret-btn-confirm:hover:not(:disabled) { background: var(--ret-amber-d); }
+.ret-btn-confirm:disabled { opacity: .45; cursor: not-allowed; }
+
+.ret-btn-back {
+    padding: .85rem 1.25rem;
+    background: transparent;
+    border: 1.5px solid var(--ret-border);
+    border-radius: 10px;
+    color: var(--ret-muted);
+    font-family: "Outfit", sans-serif;
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+}
+
+.ret-btn-back:hover { border-color: var(--ret-amber); color: var(--ret-amber); }
+
+.ret-btn-pair {
+    display: flex;
+    gap: .75rem;
+    margin-top: .25rem;
+}
+
+/* ── Spinner ───────────────────────────────────────────────────── */
+.ret-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(0,0,0,.3);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: retSpin .7s linear infinite;
+}
+
+.ret-spinner--sm {
+    width: 14px;
+    height: 14px;
+    border-color: rgba(245,158,11,.3);
+    border-top-color: var(--ret-amber);
+}
+
+@keyframes retSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+    .ret-creds-grid      { grid-template-columns: 1fr; }
+    .ret-opciones-grid   { grid-template-columns: 1fr 1fr; }
+    .ret-btn-pair        { flex-direction: column-reverse; }
+    .ret-opts-row        { flex-direction: column; gap: 1rem; }
+}

@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
     const [usuario, setUsuario] = useState(() => {
         try {
-            /**guarda los datos del usuario en el storage */
+            
             const guardado = sessionStorage.getItem("usuario_atm");
             
             return guardado ? JSON.parse(guardado) : null;
@@ -35,5 +35,5 @@ export function AuthProvider({ children }) {
     );
 }
 
-/** Hook para consumir el contexto fácilmente */
+
 export const useAuth = () => useContext(AuthContext);

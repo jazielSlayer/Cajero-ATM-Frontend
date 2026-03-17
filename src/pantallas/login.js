@@ -4,7 +4,7 @@ import { loginRequest } from "../Api/Api_admin/Login";
 import { useAuth } from "../Authcontext";
 import "../Css/Login.css";
 
-// Mapa de roles → ruta de inicio
+
 const RUTA_POR_ROL = {
     Cliente:        "/cliente/",
     Administrador:  "/admin/",

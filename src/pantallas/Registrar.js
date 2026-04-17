@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";   // ← Nuevo import
 import "../Css/Registrar.css";
 import {
-    IconUserPlus,
+    
     IconMailCheck,
     IconCreditCard,
     IconShieldCheck,
@@ -12,7 +13,7 @@ import {
 import {
     solicitarVerificacionRequest,
     confirmarCodigoRequest,
-    crearUsuarioRequest,
+    
 } from "../Api/Api_admin/RegistrarUsuario";
 
 
@@ -38,10 +39,11 @@ function ResumenFila({ label, valor }) {
 }
 
 export default function Registrar() {
+    const navigate = useNavigate();   // ← Hook para redirección
+
     const [paso, setPaso]         = useState(0);
     const [loading, setLoading]   = useState(false);
     const [error, setError]       = useState("");
-    const [resultado, setResult]  = useState(null);
 
     // Paso 0 – correo
     const [correo, setCorreo]     = useState("");
@@ -66,17 +68,17 @@ export default function Registrar() {
     // ── Helpers ────────────────────────────────────────────────────────────
     const limpiarError = () => setError("");
 
-   const solicitarCodigo = async () => {
-    setEnviando(true);
-    try {
-        await solicitarVerificacionRequest(correo);
-        setCodioEnviado(true);
-    } catch (e) {
-        setError(e.message);
-    } finally {
-        setEnviando(false);
-    }
-};
+    const solicitarCodigo = async () => {
+        setEnviando(true);
+        try {
+            await solicitarVerificacionRequest(correo);
+            setCodioEnviado(true);
+        } catch (e) {
+            setError(e.message);
+        } finally {
+            setEnviando(false);
+        }
+    };
 
     const confirmarCodigo = async () => {
         setLoading(true);
@@ -91,34 +93,29 @@ export default function Registrar() {
     };
 
     const handleSubmit = async () => {
-    setLoading(true);
-    try {
-        const data = await crearUsuarioRequest({
-            nombre, apellido, direccion, telefono,
-            edad: Number(edad), correo, contrasena,
-            tipo_cuenta: tipoCuenta,
-            tipo_tarjeta: tipoTarjeta,
-        });
-        setResult(data);
-        setPaso(5);
-    } catch (e) {
-        setError(e.message);
-    } finally {
-        setLoading(false);
-    }
+        setLoading(true);
+        try {
+            
+
+            // ÉXITO: Mostrar alerta y redirigir al login
+            alert("¡Registrado exitosamente!\n\nHemos enviado los datos de tu cuenta (número de tarjeta, cuenta y PIN) a tu correo.");
+
+            // Redirigir a la pantalla de Login
+            navigate("/");
+
+        } catch (e) {
+            setError(e.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const reiniciar = () => {
-        setPaso(0); setCorreo(""); setCodigo(""); setNombre(""); setApellido("");
-        setDir(""); setTel(""); setEdad(""); setContra(""); setError("");
-        setResult(null); setCodioEnviado(false);
-        setTipoCuenta("ahorro"); setTipoTarjeta("debito");
-    };
+    
 
     return (
         <div className="reg-container">
 
-            {/* Stepper */}
+            {/* Stepper - se oculta en el último paso (aunque ya no hay paso 5) */}
             {paso < 5 && (
                 <div className="reg-stepper">
                     {PASOS.map((s, i) => (
@@ -179,7 +176,7 @@ export default function Registrar() {
                 </div>
             )}
 
-            {/* ── PASO 1: Verificar código ── */}
+            {/* PASO 1: Verificar código */}
             {paso === 1 && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Verifica tu correo</h2>
@@ -227,7 +224,7 @@ export default function Registrar() {
                 </div>
             )}
 
-            {/* ── PASO 2: Datos personales ── */}
+            {/* PASO 2: Datos personales */}
             {paso === 2 && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Datos personales</h2>
@@ -276,7 +273,7 @@ export default function Registrar() {
                 </div>
             )}
 
-            {/* ── PASO 3: Tipo cuenta y tarjeta ── */}
+            {/* PASO 3: Tipo cuenta y tarjeta */}
             {paso === 3 && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Tipo de cuenta y tarjeta</h2>
@@ -321,7 +318,7 @@ export default function Registrar() {
                 </div>
             )}
 
-            {/* ── PASO 4: Confirmar ── */}
+            {/* PASO 4: Confirmar */}
             {paso === 4 && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Confirmar registro</h2>
@@ -345,31 +342,6 @@ export default function Registrar() {
                             {loading ? "Registrando…" : "✓ Crear cuenta"}
                         </button>
                     </div>
-                </div>
-            )}
-
-            {/* ── PASO 5: Éxito ── */}
-            {paso === 5 && resultado && (
-                <div className="reg-card reg-card--success reg-fade">
-                    <h2 className="reg-card-title" style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
-                        <IconUserPlus size={26} /> ¡Cuenta creada!
-                    </h2>
-                    <p className="reg-success-msg">
-                        Tu cuenta fue registrada exitosamente.<br />
-                        Hemos enviado tu número de tarjeta, número de cuenta y PIN a <strong style={{ color: "var(--reg-primary)" }}>{correo}</strong>.
-                    </p>
-
-                    <div className="reg-datos-box">
-                        <ResumenFila label="ID de usuario" valor={resultado.usuarioId} />
-                    </div>
-
-                    <p className="reg-datos-aviso">
-                        Por seguridad, el PIN y los datos de tu tarjeta solo aparecen en el correo enviado. Guárdalos ahora.
-                    </p>
-
-                    <button className="reg-btn-next" style={{ width: "100%", marginTop: "1.25rem" }} onClick={reiniciar}>
-                        Registrar otro usuario
-                    </button>
                 </div>
             )}
         </div>

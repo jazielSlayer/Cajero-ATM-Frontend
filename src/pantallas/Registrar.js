@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";   // ← Nuevo import
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Css/Registrar.css";
 import {
-    
+    IconUserPlus,
     IconMailCheck,
     IconCreditCard,
     IconShieldCheck,
@@ -13,7 +13,7 @@ import {
 import {
     solicitarVerificacionRequest,
     confirmarCodigoRequest,
-    
+    crearUsuarioRequest,
 } from "../Api/Api_admin/RegistrarUsuario";
 
 
@@ -39,11 +39,12 @@ function ResumenFila({ label, valor }) {
 }
 
 export default function Registrar() {
-    const navigate = useNavigate();   // ← Hook para redirección
+    const navigate = useNavigate();
 
     const [paso, setPaso]         = useState(0);
     const [loading, setLoading]   = useState(false);
     const [error, setError]       = useState("");
+    const [registroExitoso, setRegistroExitoso] = useState(false);
 
     // Paso 0 – correo
     const [correo, setCorreo]     = useState("");
@@ -94,28 +95,64 @@ export default function Registrar() {
 
     const handleSubmit = async () => {
         setLoading(true);
+        setError("");
+
         try {
-            
+            await crearUsuarioRequest({
+                nombre, 
+                apellido, 
+                direccion, 
+                telefono,
+                edad: Number(edad), 
+                correo, 
+                contrasena,
+                tipo_cuenta: tipoCuenta,
+                tipo_tarjeta: tipoTarjeta,
+            });
 
-            // ÉXITO: Mostrar alerta y redirigir al login
-            alert("¡Registrado exitosamente!\n\nHemos enviado los datos de tu cuenta (número de tarjeta, cuenta y PIN) a tu correo.");
-
-            // Redirigir a la pantalla de Login
-            navigate("/");
+            // Mostrar pantalla de éxito
+            setRegistroExitoso(true);
+            setPaso(5);   // Usamos el paso 5 solo para éxito
 
         } catch (e) {
-            setError(e.message);
+            setError(e.message || "Ocurrió un error al crear la cuenta");
         } finally {
             setLoading(false);
         }
     };
 
-    
+    // Redirección automática después de 3 segundos en pantalla de éxito
+    useEffect(() => {
+        if (registroExitoso) {
+            const timer = setTimeout(() => {
+                navigate("/");
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [registroExitoso, navigate]);
+
+    const reiniciar = () => {
+        setPaso(0);
+        setCorreo(""); 
+        setCodigo(""); 
+        setNombre(""); 
+        setApellido("");
+        setDir(""); 
+        setTel(""); 
+        setEdad(""); 
+        setContra(""); 
+        setError("");
+        setCodioEnviado(false);
+        setTipoCuenta("ahorro"); 
+        setTipoTarjeta("debito");
+        setRegistroExitoso(false);
+    };
 
     return (
         <div className="reg-container">
 
-            {/* Stepper - se oculta en el último paso (aunque ya no hay paso 5) */}
+            {/* Stepper - se oculta en éxito */}
             {paso < 5 && (
                 <div className="reg-stepper">
                     {PASOS.map((s, i) => (
@@ -130,8 +167,34 @@ export default function Registrar() {
                 </div>
             )}
 
+            {/* ── PANTALLA DE ÉXITO ── */}
+            {registroExitoso && (
+                <div className="reg-card reg-card--success reg-fade">
+                    <h2 className="reg-card-title" style={{ display: "flex", alignItems: "center", gap: ".5rem", justifyContent: "center" }}>
+                        <IconUserPlus size={32} /> ¡Cuenta creada!
+                    </h2>
+                    
+                    <p className="reg-success-msg">
+                        Tu cuenta fue registrada exitosamente.<br /><br />
+                        Hemos enviado tu <strong>número de tarjeta</strong>, <strong>número de cuenta</strong> y <strong>PIN</strong> al correo:<br />
+                        <strong style={{ color: "var(--reg-primary)" }}>{correo}</strong>
+                    </p>
+
+                    <p className="reg-datos-aviso" style={{ marginTop: "1.5rem" }}>
+                        Revisa tu bandeja de entrada (y spam) para obtener todos los datos de acceso.<br />
+                        Serás redirigido automáticamente a la pantalla de inicio de sesión en unos segundos...
+                    </p>
+
+                    <div style={{ textAlign: "center", marginTop: "2rem", opacity: 0.7 }}>
+                        <div className="reg-btn-next" style={{ display: "inline-block", padding: "0.7rem 2rem" }} onClick={() => navigate("/")}>
+                            Ir al Login ahora
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* ── PASO 0: Correo ── */}
-            {paso === 0 && (
+            {paso === 0 && !registroExitoso && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Crea tu cuenta</h2>
                     <p className="reg-card-sub">Ingresa tu correo para empezar. Te enviaremos un código de verificación.</p>
@@ -176,8 +239,9 @@ export default function Registrar() {
                 </div>
             )}
 
+            {/* Resto de pasos (1, 2, 3 y 4) se mantienen igual */}
             {/* PASO 1: Verificar código */}
-            {paso === 1 && (
+            {paso === 1 && !registroExitoso && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Verifica tu correo</h2>
                     <p className="reg-card-sub">Ingresa el código de 6 dígitos que enviamos a tu correo.</p>
@@ -225,7 +289,7 @@ export default function Registrar() {
             )}
 
             {/* PASO 2: Datos personales */}
-            {paso === 2 && (
+            {paso === 2 && !registroExitoso && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Datos personales</h2>
                     <p className="reg-card-sub">Completa tu información para crear la cuenta.</p>
@@ -274,7 +338,7 @@ export default function Registrar() {
             )}
 
             {/* PASO 3: Tipo cuenta y tarjeta */}
-            {paso === 3 && (
+            {paso === 3 && !registroExitoso && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Tipo de cuenta y tarjeta</h2>
                     <p className="reg-card-sub">Elige las opciones que mejor se adapten a ti.</p>
@@ -319,7 +383,7 @@ export default function Registrar() {
             )}
 
             {/* PASO 4: Confirmar */}
-            {paso === 4 && (
+            {paso === 4 && !registroExitoso && (
                 <div className="reg-card reg-fade">
                     <h2 className="reg-card-title">Confirmar registro</h2>
                     <p className="reg-card-sub">Revisa tus datos antes de crear la cuenta.</p>
@@ -338,7 +402,11 @@ export default function Registrar() {
 
                     <div className="reg-btn-row">
                         <button className="reg-btn-back" onClick={() => { limpiarError(); setPaso(3); }}>← Atrás</button>
-                        <button className="reg-btn-confirm" onClick={handleSubmit} disabled={loading}>
+                        <button 
+                            className="reg-btn-confirm" 
+                            onClick={handleSubmit} 
+                            disabled={loading}
+                        >
                             {loading ? "Registrando…" : "✓ Crear cuenta"}
                         </button>
                     </div>

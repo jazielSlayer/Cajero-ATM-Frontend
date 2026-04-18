@@ -4,19 +4,18 @@ import { loginRequest } from "../Api/Api_admin/Login";
 import { useAuth } from "../Authcontext";
 import "../Css/Login.css";
 
-
 const RUTA_POR_ROL = {
-    Cliente:        "/cliente/",
-    Administrador:  "/admin/",
-    Operador:       "/operador/",
+    Cliente:       "/cliente/",
+    Administrador: "/admin/",
+    Operador:      "/operador/",
 };
 
 function LoginPantalla() {
-    const navigate     = useNavigate();
+    const navigate          = useNavigate();
     const { guardarSesion } = useAuth();
 
-    const [form, setForm]       = useState({ numero_tarjeta: "", pin: "", contrasena: "" });
-    const [error, setError]     = useState("");
+    const [form, setForm]         = useState({ correo: "", contrasena: "" }); // ← sin numero_tarjeta ni pin
+    const [error, setError]       = useState("");
     const [cargando, setCargando] = useState(false);
 
     const handleChange = (e) => {
@@ -30,16 +29,10 @@ function LoginPantalla() {
         setError("");
 
         try {
-            const datos = await loginRequest(
-                form.numero_tarjeta,
-                form.pin,
-                form.contrasena
-            );
+            const datos = await loginRequest(form.correo, form.contrasena); // ← solo dos args
 
-            // Guardar sesión en contexto + sessionStorage
             guardarSesion(datos);
 
-            // Redirigir según rol
             const ruta = RUTA_POR_ROL[datos.Nombre_rol] ?? "/";
             navigate(ruta, { replace: true });
 
@@ -58,25 +51,14 @@ function LoginPantalla() {
                 <form onSubmit={handleSubmit}>
                     <div className="username">
                         <input
-                            type="text"
-                            name="numero_tarjeta"
-                            value={form.numero_tarjeta}
+                            type="email"                  // ← type email para validación nativa
+                            name="correo"
+                            value={form.correo}
                             onChange={handleChange}
                             required
-                            autoComplete="off"
+                            autoComplete="email"
                         />
-                        <label>Número de tarjeta</label>
-                    </div>
-
-                    <div className="username">
-                        <input
-                            type="password"
-                            name="pin"
-                            value={form.pin}
-                            onChange={handleChange}
-                            required
-                        />
-                        <label>PIN</label>
+                        <label>Correo electrónico</label>
                     </div>
 
                     <div className="username">
@@ -86,6 +68,7 @@ function LoginPantalla() {
                             value={form.contrasena}
                             onChange={handleChange}
                             required
+                            autoComplete="current-password"
                         />
                         <label>Contraseña</label>
                     </div>

@@ -238,6 +238,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: border-color .2s, background .2s;
+    color: white;
 }
 
 .dep-radio input { display: none; }

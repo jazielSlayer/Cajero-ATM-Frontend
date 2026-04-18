@@ -207,6 +207,7 @@ p { color: #fff; }
     background: rgba(0, 0, 0, 0.921);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     border-radius: 10px;
+    color: white;
 }
 
 .historial th,
@@ -220,7 +221,7 @@ p { color: #fff; }
 
 td:hover {
     border-color: #fff;
-    color: #000;
+    color: #000000;
     background: #fff;
     transition: .5s;
     border-color: black;

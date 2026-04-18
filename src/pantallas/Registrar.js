@@ -132,22 +132,7 @@ export default function Registrar() {
         }
     }, [registroExitoso, navigate]);
 
-    const reiniciar = () => {
-        setPaso(0);
-        setCorreo(""); 
-        setCodigo(""); 
-        setNombre(""); 
-        setApellido("");
-        setDir(""); 
-        setTel(""); 
-        setEdad(""); 
-        setContra(""); 
-        setError("");
-        setCodioEnviado(false);
-        setTipoCuenta("ahorro"); 
-        setTipoTarjeta("debito");
-        setRegistroExitoso(false);
-    };
+   
 
     return (
         <div className="reg-container">

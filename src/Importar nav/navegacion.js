@@ -1,6 +1,6 @@
 import "../Css/Navegacion.css"
 import { Link } from "react-router-dom";
-import { IconCashPlus, IconUser, IconWallet,IconCashBanknoteMinus,IconScale, IconHelp,IconClipboardData,IconHome, IconSearch } from '@tabler/icons-react';
+import { IconCashPlus, IconUser,IconCashMove, IconWallet,IconCashBanknoteMinus,IconScale, IconHelp,IconClipboardData,IconHome, IconSearch } from '@tabler/icons-react';
 
 
 function Navegacion({ isOpen, onToggle }) {
@@ -33,6 +33,10 @@ function Navegacion({ isOpen, onToggle }) {
                 {/* retirar dinero */}
                 <Link to="/cliente/retirar" className="pestañas icons-header">
                     <IconCashBanknoteMinus alt="retirar" />
+                </Link>
+                {/* Transferir */}
+                <Link to="/cliente/transferir" className="pestañas icons-header">
+                    <IconCashMove alt="transferir" />
                 </Link>
                 {/* Actividad */}
                 <Link to="/cliente/actividad" className="pestañas icons-header">
@@ -84,6 +88,13 @@ function Navegacion({ isOpen, onToggle }) {
                         <Link to="/cliente/depositar" className="a">
                             <IconCashPlus alt="agregar" className="img" />
                             <span>Depositar Dinero</span>
+                        </Link>
+                    </li>
+                    <li>
+                        {/* Transferir */}
+                        <Link to="/cliente/transferir" className="a">
+                            <IconCashMove alt="transferir" className="img" />
+                            <span>Transferir Dinero</span>
                         </Link>
                     </li>
                     <li>

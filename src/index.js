@@ -9,6 +9,7 @@ import LoginPantalla   from "./pantallas/login";
 import Cliente         from "./pantallas/Cliente/cliente";
 import DepositarDinero from "./pantallas/Cliente/depositar-dinero";
 import RetirarDinero   from "./pantallas/Cliente/retirar_dinero";
+import Transferir      from "./pantallas/Cliente/Transferir";
 import Actividad       from "./pantallas/Cliente/actividad";
 import Ayuda           from "./pantallas/Cliente/ayuda";
 
@@ -32,6 +33,11 @@ createRoot(document.getElementById("root")).render(
                     <Route path="/cliente/depositar" element={
                         <RutaProtegida roles={["Cliente"]}>
                             <DepositarDinero />
+                        </RutaProtegida>
+                    } />
+                    <Route path="/cliente/transferir" element={
+                        <RutaProtegida roles={["Cliente"]}>
+                            <Transferir />
                         </RutaProtegida>
                     } />
                     <Route path="/cliente/retirar" element={

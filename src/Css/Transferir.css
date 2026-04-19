@@ -1,0 +1,590 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Transferir.css  — Paleta NEGRO Y BLANCO puro (espejo de Depositar.css)
+═══════════════════════════════════════════════════════════════════ */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap");
+
+/* ── Variables ─────────────────────────────────────────────────── */
+:root {
+    --trf-bg:        #050505;
+    --trf-card:      #0f0f0f;
+    --trf-primary:   #ffffff;
+    --trf-accent:    #000000;
+    --trf-danger:    #ffffff;
+    --trf-border:    #1f1f1f;
+    --trf-text:      #ffffff;
+    --trf-muted:     #bdbdbd;
+    --trf-radius:    14px;
+    --trf-shadow:    0 4px 24px rgba(0, 0, 0, 0.65);
+}
+
+/* ── Layout base ───────────────────────────────────────────────── */
+.trf-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    font-family: "DM Sans", sans-serif;
+    color: var(--trf-text);
+}
+
+/* ── Fade animation ────────────────────────────────────────────── */
+.trf-fade {
+    animation: trfFade .35s ease;
+}
+
+@keyframes trfFade {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Stepper ───────────────────────────────────────────────────── */
+.trf-stepper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.trf-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .25rem;
+    opacity: .38;
+    transition: opacity .3s;
+}
+
+.trf-step--active { opacity: 1; }
+
+.trf-step-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--trf-border);
+    color: var(--trf-primary);
+    font-size: .8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .3s, color .3s;
+}
+
+.trf-step--active .trf-step-circle {
+    background: var(--trf-primary);
+    color: var(--trf-accent);
+}
+
+.trf-step--done .trf-step-circle {
+    background: var(--trf-accent);
+    color: var(--trf-primary);
+}
+
+.trf-step-label {
+    font-size: .7rem;
+    font-weight: 500;
+    color: #555555;
+    white-space: nowrap;
+}
+
+.trf-step--active .trf-step-label,
+.trf-step--done  .trf-step-label {
+    color: black;
+}
+
+/* ── Card ──────────────────────────────────────────────────────── */
+.trf-card {
+    background: var(--trf-card);
+    border-radius: var(--trf-radius);
+    box-shadow: var(--trf-shadow);
+    padding: 2rem 2rem 1.75rem;
+    border: 1px solid var(--trf-border);
+}
+
+.trf-card--success {
+    border-top: 4px solid var(--trf-primary);
+}
+
+.trf-card-title {
+    font-family: "DM Serif Display", serif;
+    font-size: 1.45rem;
+    font-weight: 400;
+    margin: 0 0 .5rem;
+    color: var(--trf-primary);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.trf-card-sub {
+    color: var(--trf-muted);
+    font-size: .9rem;
+    margin: 0 0 1.5rem;
+}
+
+/* ── Tipo de transferencia ─────────────────────────────────────── */
+.trf-tipo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0 1.75rem;
+}
+
+.trf-tipo-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: .5rem;
+    padding: 1.4rem 1rem;
+    border: 2px solid var(--trf-border);
+    border-radius: var(--trf-radius);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+}
+
+.trf-tipo-btn:hover {
+    border-color: var(--trf-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.trf-tipo-btn--sel {
+    border-color: var(--trf-primary);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.trf-tipo-icon  { font-size: 2rem; color: white; display: flex; }
+.trf-tipo-label { font-weight: 600; font-size: .95rem; color: var(--trf-text); }
+.trf-tipo-desc  { font-size: .78rem; color: var(--trf-muted); line-height: 1.4; }
+
+/* ── Cuentas ───────────────────────────────────────────────────── */
+.trf-cuentas-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: .75rem;
+    margin-top: 1.25rem;
+}
+
+.trf-arrow-center {
+    color: var(--trf-primary);
+    display: flex;
+    align-items: center;
+    padding-top: 1.4rem;
+}
+
+/* ── Fields / Labels ───────────────────────────────────────────── */
+.trf-field {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+
+.trf-label {
+    display: block;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--trf-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: .1rem;
+}
+
+.trf-field-hint {
+    font-size: .72rem;
+    color: var(--trf-muted);
+}
+
+/* ── Inputs ────────────────────────────────────────────────────── */
+.trf-input {
+    padding: .7rem .9rem;
+    border: 1.5px solid var(--trf-border);
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: .9rem;
+    color: var(--trf-text);
+    background: var(--trf-card);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.trf-input:focus {
+    border-color: var(--trf-primary);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .15);
+}
+
+.trf-input--readonly {
+    background: #1a1a1a;
+    color: var(--trf-muted);
+    cursor: default;
+}
+
+/* ── Moneda row ────────────────────────────────────────────────── */
+.trf-moneda-row {
+    display: flex;
+    align-items: flex-end;
+    gap: .75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.trf-moneda-col {
+    flex: 1;
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+
+.trf-arrow {
+    font-size: 1.5rem;
+    color: var(--trf-primary);
+    padding-bottom: .5rem;
+    flex-shrink: 0;
+}
+
+.trf-select-wrap { position: relative; }
+
+.trf-select {
+    width: 100%;
+    padding: .65rem 2rem .65rem .9rem;
+    border: 1.5px solid var(--trf-border);
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: .9rem;
+    background: var(--trf-card);
+    color: var(--trf-text);
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    transition: border-color .2s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23bdbdbd' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .7rem center;
+}
+
+.trf-select:focus {
+    outline: none;
+    border-color: var(--trf-primary);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .15);
+}
+
+.trf-saldo-hint {
+    font-size: .72rem;
+    color: var(--trf-muted);
+    font-weight: 600;
+}
+
+/* ── Tasa / Método ─────────────────────────────────────────────── */
+.trf-tasa-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.trf-radio-group {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+.trf-radio {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .85rem;
+    border: 1.5px solid var(--trf-border);
+    border-radius: 999px;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    color: white;
+}
+
+.trf-radio input[type="radio"] { display: none; }
+
+.trf-radio--sel {
+    border-color: var(--trf-accent);
+    background: rgb(245, 245, 245);
+    color: var(--trf-card);
+}
+
+/* ── Monto ─────────────────────────────────────────────────────── */
+.trf-monto-wrap { margin-bottom: 1.25rem; }
+
+.trf-monto-input-row {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--trf-border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: .4rem;
+    transition: border-color .2s;
+}
+
+.trf-monto-input-row:focus-within {
+    border-color: var(--trf-primary);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .15);
+}
+
+.trf-simbolo {
+    padding: .75rem 1rem;
+    background: var(--trf-border);
+    font-weight: 600;
+    color: var(--trf-text);
+    border-right: 1px solid var(--trf-border);
+}
+
+.trf-monto-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: .75rem 1rem;
+    font-family: "DM Sans", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--trf-text);
+    background: var(--trf-card);
+}
+
+.trf-monto-input::placeholder {
+    color: #555;
+    font-weight: 400;
+}
+
+.trf-codigo {
+    padding: .75rem 1rem;
+    background: var(--trf-border);
+    font-weight: 600;
+    font-size: .85rem;
+    color: var(--trf-muted);
+    border-left: 1px solid var(--trf-border);
+}
+
+/* ── Preview ───────────────────────────────────────────────────── */
+.trf-preview {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--trf-border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: .9rem;
+}
+
+.trf-preview-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .4rem;
+    color: var(--trf-text);
+}
+
+.trf-preview-loading { color: var(--trf-muted); font-style: italic; }
+
+.trf-preview-tasa {
+    margin-top: .5rem;
+    font-size: .78rem;
+    color: var(--trf-muted);
+    border-top: 1px dashed var(--trf-border);
+    padding-top: .5rem;
+}
+
+/* ── Sesión info ───────────────────────────────────────────────── */
+.trf-sesion-info {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--trf-border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin: 1rem 0 1.5rem;
+}
+
+.trf-sesion-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: .875rem;
+}
+
+.trf-sesion-valor {
+    font-weight: 600;
+    color: var(--trf-text);
+    font-family: monospace;
+    font-size: .85rem;
+}
+
+/* ── Resumen ───────────────────────────────────────────────────── */
+.trf-resumen {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--trf-border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.trf-resumen--success {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--trf-accent);
+}
+
+.trf-resumen-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: .45rem 0;
+    border-bottom: 1px solid var(--trf-border);
+    font-size: .9rem;
+}
+
+.trf-resumen-fila:last-child { border-bottom: none; }
+
+.trf-resumen-label { color: var(--trf-muted); }
+.trf-resumen-valor { font-weight: 600; color: var(--trf-text); }
+
+/* ── Confirmación conversión ───────────────────────────────────── */
+.trf-confirm-box {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid var(--trf-border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+}
+
+.trf-confirm-icon {
+    color: var(--trf-muted);
+    display: flex;
+}
+
+.trf-confirm-msg {
+    font-size: .875rem;
+    font-weight: 600;
+    color: var(--trf-text);
+    margin: 0;
+}
+
+.trf-confirm-detalle {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    font-size: .8rem;
+    color: var(--trf-muted);
+}
+
+/* ── Error ─────────────────────────────────────────────────────── */
+.trf-error {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--trf-primary);
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    color: var(--trf-danger);
+    font-size: .88rem;
+    margin-bottom: 1rem;
+}
+
+.trf-warn {
+    color: var(--trf-muted);
+    font-size: .8rem;
+    font-weight: 600;
+    margin-top: .5rem;
+    text-align: center;
+}
+
+/* ── Éxito ─────────────────────────────────────────────────────── */
+.trf-success-msg {
+    text-align: center;
+    color: var(--trf-muted);
+    margin-bottom: 1.5rem;
+    font-size: .95rem;
+}
+
+/* ── Botones ───────────────────────────────────────────────────── */
+.trf-btn-row {
+    display: flex;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-top: .5rem;
+    flex-wrap: wrap;
+}
+
+.trf-btn-next,
+.trf-btn-confirm {
+    flex: 1;
+    padding: .8rem 1.5rem;
+    border: 1.5px solid var(--trf-accent);
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: .95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, opacity .2s, transform .1s;
+}
+
+.trf-btn-next {
+    background: var(--trf-primary);
+    color: var(--trf-accent);
+}
+
+.trf-btn-next:hover:not(:disabled) {
+    background: var(--trf-accent);
+    color: var(--trf-primary);
+    border-color: var(--trf-primary);
+}
+
+.trf-btn-next:disabled,
+.trf-btn-confirm:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.trf-btn-confirm {
+    background: var(--trf-accent);
+    color: var(--trf-primary);
+}
+
+.trf-btn-confirm:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.trf-btn-back {
+    padding: .8rem 1.2rem;
+    background: transparent;
+    border: 1.5px solid var(--trf-border);
+    border-radius: 8px;
+    font-family: "DM Sans", sans-serif;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--trf-muted);
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+}
+
+.trf-btn-back:hover {
+    border-color: var(--trf-primary);
+    color: var(--trf-primary);
+}
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+    .trf-card { padding: 1.5rem 1.25rem; }
+    .trf-tipo-grid { grid-template-columns: 1fr; }
+    .trf-cuentas-grid { grid-template-columns: 1fr; }
+    .trf-arrow-center { padding-top: 0; justify-content: center; }
+    .trf-moneda-row { flex-direction: column; }
+    .trf-arrow { display: none; }
+    .trf-btn-row { flex-direction: column-reverse; }
+    .trf-btn-back { text-align: center; }
+    .trf-step-label { display: none; }
+}

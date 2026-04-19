@@ -41,6 +41,17 @@ function Cliente() {
         : "N/A";
 
     const ocultar = (valor) => datosOcultos ? "************" : valor;
+
+    
+
+   
+    const ultimasTransacciones = [
+        ...transferencias.map(t => ({ ...t, _tipo: "Transferencia" })),
+        ...depositos.map(t => ({ ...t, _tipo: "Deposito" })),
+        ...retiros.map(t => ({ ...t, _tipo: "Retiro" })),
+    ]
+        .sort((a, b) => new Date(b.Fecha_transaccion) - new Date(a.Fecha_transaccion))
+        .slice(0, 6);
    
 
     return (
@@ -106,98 +117,42 @@ function Cliente() {
                 </div>
             </div>
             
-            {/* Tabla transacciones */}
             <div className="historial">
-                <h2>Transacciones</h2>
-                <h2>Transferencias</h2>
-                {transferencias.length === 0 ? (
+                <h2>Últimas transacciones</h2>
+                {ultimasTransacciones.length === 0 ? (
                     <p className="sin-datos">No hay transacciones registradas.</p>
                 ) : (
                     <div className="tabla-responsive">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Fecha</th><th>Método</th><th>Monto</th>
-                                    <th>Descripción</th><th>Destinatario</th><th>Cuenta destino</th><th>Estado</th>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Método</th>
+                                    <th>Monto</th>
+                                    <th>Descripción</th>
+                                    <th>Destinatario</th>
+                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {transferencias.map((t) => (
+                                {ultimasTransacciones.map((t) => (
                                     <tr key={t.transaccion_id}>
-                                        <td data-label="Fecha">{new Date(t.Fecha_transaccion).toLocaleDateString("es-ES")}</td>
-                                        
+                                        <td data-label="Fecha">
+                                            {new Date(t.Fecha_transaccion).toLocaleDateString("es-ES")}
+                                        </td>
+                                        <td data-label="Tipo">{t._tipo}</td>
                                         <td data-label="Método">{t.Metodo_transaccion}</td>
-                                        <td data-label="Monto" className="monto-negativo">
-                                            -${Number(t.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
+                                        <td
+                                            data-label="Monto"
+                                            className={t._tipo === "Deposito" ? "monto-positivo" : "monto-negativo"}
+                                        >
+                                            {t._tipo === "Deposito" ? "+" : "-"}
+                                            Bs. {Number(t.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
                                         </td>
                                         <td data-label="Descripción">{t.Descripcion ?? "-"}</td>
-                                        
                                         <td data-label="Destinatario">{t.nombre_destinatario ?? "-"}</td>
-                                        <td data-label="Destinatario">{t.cuenta_destino }</td>
                                         <td data-label="Estado">{t.estado_transaccion}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-            {/* Tabla Retiros */}
-            <div className="historial">
-                <h2>Retiros</h2>
-                {retiros.length === 0 ? (
-                    <p className="sin-datos">No hay depósitos registrados.</p>
-                ) : (
-                    <div className="tabla-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Fecha</th><th>Metodo</th><th>Monto</th>
-                                    <th>Descripcion</th><th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {retiros.map((r) => (
-                                    <tr key={r.transaccion_id}>
-                                        <td data-label="Fecha">{new Date(r.Fecha_transaccion).toLocaleDateString("es-ES")}</td>
-                                        <td data-label="Método">{r.Metodo_transaccion}</td>
-                                        <td data-label="Monto" className="monto-positivo">
-                                            +${Number(r.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
-                                        </td>
-                                        <td data-label="Descripción">{r.Descripcion ?? "-"}</td>
-                                        <td data-label="Estado">{r.estado_transaccion}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-            {/* Tabla depósitos */}
-            <div className="historial">
-                <h2>Depósitos</h2>
-                {depositos.length === 0 ? (
-                    <p className="sin-datos">No hay depósitos registrados.</p>
-                ) : (
-                    <div className="tabla-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Fecha</th><th>Método</th><th>Monto</th>
-                                    <th>Descricion</th><th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {depositos.map((d) => (
-                                    <tr key={d.transaccion_id}>
-                                        <td data-label="Fecha">{new Date(d.Fecha_transaccion).toLocaleDateString("es-ES")}</td>
-                                        <td data-label="Método">{d.Metodo_transaccion}</td>
-                                        <td data-label="Monto" className="monto-positivo">
-                                            +${Number(d.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
-                                        </td>
-                                        <td data-label="Descripción">{d.Descripcion ?? "-"}</td>
-                                       
-                                        <td data-label="Estado">{d.estado_transaccion}</td>
                                     </tr>
                                 ))}
                             </tbody>

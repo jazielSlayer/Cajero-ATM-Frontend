@@ -1,0 +1,328 @@
+// ── src/i18n/i18n.js ─────────────────────────────────────────────────────────
+// Instalar dependencias:  npm install i18next react-i18next
+// Importar este archivo una sola vez en tu main.jsx / index.jsx:
+//   import "./i18n/i18n";
+// ─────────────────────────────────────────────────────────────────────────────
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+
+// ── Traducciones ──────────────────────────────────────────────────────────────
+const resources = {
+    // ── ESPAÑOL (base) ────────────────────────────────────────────────────────
+    es: {
+        translation: {
+            // Nav
+            nav: {
+                buscar: "Buscar",
+                inicio: "Inicio",
+                actividad: "Actividad",
+                retirar: "Retirar Dinero",
+                depositar: "Depositar Dinero",
+                transferir: "Transferir Dinero",
+                ayuda: "Ayuda",
+            },
+            // Página Actividad
+            act: {
+                cargando: "Cargando actividad…",
+                sin_sesion: "No hay sesión activa.",
+                // KPIs
+                total_depositos: "Total Depósitos",
+                total_retiros: "Total Retiros",
+                transferencias: "Transferencias",
+                balance_neto: "Balance neto",
+                // Exportar
+                csv: "CSV",
+                pdf: "PDF",
+                exportando: "Exportando…",
+                sin_datos_exportar: "Sin datos para exportar.",
+                error_exportar: "Error al exportar.",
+                // Gráfico
+                actividad_mensual: "Actividad mensual",
+                barras: "Barras",
+                linea: "Línea",
+                distribucion: "Distribución",
+                depositos: "Depósitos",
+                retiros: "Retiros",
+                // Filtros
+                buscar_placeholder: "Buscar (Netflix, supermercado…)",
+                todos_tipos: "Todos los tipos",
+                todas_cuentas: "Todas las cuentas",
+                filtrar: "Filtrar",
+                limpiar: "Limpiar",
+                filtros_activos: "Filtros activos — {{count}} resultado(s)",
+                // Tabs
+                transacciones_tab: "Transacciones",
+                cuentas_tab: "Cuentas vinculadas",
+                // Tabla
+                col_id: "#",
+                col_fecha: "Fecha",
+                col_tipo: "Tipo",
+                col_metodo: "Método",
+                col_monto: "Monto",
+                col_saldo_post: "Saldo Post.",
+                col_descripcion: "Descripción",
+                col_destinatario: "Destinatario",
+                col_estado: "Estado",
+                sin_transacciones: "Sin transacciones para los filtros seleccionados.",
+                // Paginación
+                pg_info: "{{actual}}/{{total}} · {{count}} transacciones",
+                // Cuentas
+                principal: "Principal",
+                sin_saldo: "Sin saldo registrado",
+                vence: "vence",
+                // Cuenta tarjeta
+                tipo_cuenta_label: "Posición",
+            },
+            // Selector de idioma
+            lang: {
+                titulo: "Idioma",
+            },
+        },
+    },
+
+    // ── ENGLISH ───────────────────────────────────────────────────────────────
+    en: {
+        translation: {
+            nav: {
+                buscar: "Search",
+                inicio: "Home",
+                actividad: "Activity",
+                retirar: "Withdraw Money",
+                depositar: "Deposit Money",
+                transferir: "Transfer Money",
+                ayuda: "Help",
+            },
+            act: {
+                cargando: "Loading activity…",
+                sin_sesion: "No active session.",
+                total_depositos: "Total Deposits",
+                total_retiros: "Total Withdrawals",
+                transferencias: "Transfers",
+                balance_neto: "Net Balance",
+                csv: "CSV",
+                pdf: "PDF",
+                exportando: "Exporting…",
+                sin_datos_exportar: "No data to export.",
+                error_exportar: "Export error.",
+                actividad_mensual: "Monthly Activity",
+                barras: "Bars",
+                linea: "Line",
+                distribucion: "Distribution",
+                depositos: "Deposits",
+                retiros: "Withdrawals",
+                buscar_placeholder: "Search (Netflix, supermarket…)",
+                todos_tipos: "All types",
+                todas_cuentas: "All accounts",
+                filtrar: "Filter",
+                limpiar: "Clear",
+                filtros_activos: "Active filters — {{count}} result(s)",
+                transacciones_tab: "Transactions",
+                cuentas_tab: "Linked Accounts",
+                col_id: "#",
+                col_fecha: "Date",
+                col_tipo: "Type",
+                col_metodo: "Method",
+                col_monto: "Amount",
+                col_saldo_post: "Post-Balance",
+                col_descripcion: "Description",
+                col_destinatario: "Recipient",
+                col_estado: "Status",
+                sin_transacciones: "No transactions for the selected filters.",
+                pg_info: "{{actual}}/{{total}} · {{count}} transactions",
+                principal: "Main",
+                sin_saldo: "No balance recorded",
+                vence: "expires",
+                tipo_cuenta_label: "Position",
+            },
+            lang: { titulo: "Language" },
+        },
+    },
+
+    // ── PORTUGUÊS ─────────────────────────────────────────────────────────────
+    pt: {
+        translation: {
+            nav: {
+                buscar: "Pesquisar",
+                inicio: "Início",
+                actividad: "Atividade",
+                retirar: "Sacar Dinheiro",
+                depositar: "Depositar Dinheiro",
+                transferir: "Transferir Dinheiro",
+                ayuda: "Ajuda",
+            },
+            act: {
+                cargando: "Carregando atividade…",
+                sin_sesion: "Nenhuma sessão ativa.",
+                total_depositos: "Total de Depósitos",
+                total_retiros: "Total de Saques",
+                transferencias: "Transferências",
+                balance_neto: "Saldo Líquido",
+                csv: "CSV",
+                pdf: "PDF",
+                exportando: "Exportando…",
+                sin_datos_exportar: "Sem dados para exportar.",
+                error_exportar: "Erro ao exportar.",
+                actividad_mensual: "Atividade Mensal",
+                barras: "Barras",
+                linea: "Linha",
+                distribucion: "Distribuição",
+                depositos: "Depósitos",
+                retiros: "Saques",
+                buscar_placeholder: "Pesquisar (Netflix, supermercado…)",
+                todos_tipos: "Todos os tipos",
+                todas_cuentas: "Todas as contas",
+                filtrar: "Filtrar",
+                limpiar: "Limpar",
+                filtros_activos: "Filtros ativos — {{count}} resultado(s)",
+                transacciones_tab: "Transações",
+                cuentas_tab: "Contas Vinculadas",
+                col_id: "#",
+                col_fecha: "Data",
+                col_tipo: "Tipo",
+                col_metodo: "Método",
+                col_monto: "Valor",
+                col_saldo_post: "Saldo Pós.",
+                col_descripcion: "Descrição",
+                col_destinatario: "Destinatário",
+                col_estado: "Status",
+                sin_transacciones: "Sem transações para os filtros selecionados.",
+                pg_info: "{{actual}}/{{total}} · {{count}} transações",
+                principal: "Principal",
+                sin_saldo: "Sem saldo registrado",
+                vence: "vence",
+                tipo_cuenta_label: "Posição",
+            },
+            lang: { titulo: "Idioma" },
+        },
+    },
+
+    // ── FRANÇAIS ──────────────────────────────────────────────────────────────
+    fr: {
+        translation: {
+            nav: {
+                buscar: "Rechercher",
+                inicio: "Accueil",
+                actividad: "Activité",
+                retirar: "Retirer de l'argent",
+                depositar: "Déposer de l'argent",
+                transferir: "Virer de l'argent",
+                ayuda: "Aide",
+            },
+            act: {
+                cargando: "Chargement de l'activité…",
+                sin_sesion: "Aucune session active.",
+                total_depositos: "Total des Dépôts",
+                total_retiros: "Total des Retraits",
+                transferencias: "Virements",
+                balance_neto: "Solde Net",
+                csv: "CSV",
+                pdf: "PDF",
+                exportando: "Exportation…",
+                sin_datos_exportar: "Aucune donnée à exporter.",
+                error_exportar: "Erreur d'exportation.",
+                actividad_mensual: "Activité Mensuelle",
+                barras: "Barres",
+                linea: "Ligne",
+                distribucion: "Distribution",
+                depositos: "Dépôts",
+                retiros: "Retraits",
+                buscar_placeholder: "Rechercher (Netflix, supermarché…)",
+                todos_tipos: "Tous les types",
+                todas_cuentas: "Tous les comptes",
+                filtrar: "Filtrer",
+                limpiar: "Effacer",
+                filtros_activos: "Filtres actifs — {{count}} résultat(s)",
+                transacciones_tab: "Transactions",
+                cuentas_tab: "Comptes Liés",
+                col_id: "#",
+                col_fecha: "Date",
+                col_tipo: "Type",
+                col_metodo: "Méthode",
+                col_monto: "Montant",
+                col_saldo_post: "Solde Post.",
+                col_descripcion: "Description",
+                col_destinatario: "Destinataire",
+                col_estado: "Statut",
+                sin_transacciones: "Aucune transaction pour les filtres sélectionnés.",
+                pg_info: "{{actual}}/{{total}} · {{count}} transactions",
+                principal: "Principal",
+                sin_saldo: "Aucun solde enregistré",
+                vence: "expire le",
+                tipo_cuenta_label: "Position",
+            },
+            lang: { titulo: "Langue" },
+        },
+    },
+
+    // ── DEUTSCH ───────────────────────────────────────────────────────────────
+    de: {
+        translation: {
+            nav: {
+                buscar: "Suchen",
+                inicio: "Startseite",
+                actividad: "Aktivität",
+                retirar: "Geld abheben",
+                depositar: "Geld einzahlen",
+                transferir: "Geld überweisen",
+                ayuda: "Hilfe",
+            },
+            act: {
+                cargando: "Aktivität wird geladen…",
+                sin_sesion: "Keine aktive Sitzung.",
+                total_depositos: "Gesamte Einzahlungen",
+                total_retiros: "Gesamte Abhebungen",
+                transferencias: "Überweisungen",
+                balance_neto: "Nettoguthaben",
+                csv: "CSV",
+                pdf: "PDF",
+                exportando: "Exportieren…",
+                sin_datos_exportar: "Keine Daten zum Exportieren.",
+                error_exportar: "Exportfehler.",
+                actividad_mensual: "Monatliche Aktivität",
+                barras: "Balken",
+                linea: "Linie",
+                distribucion: "Verteilung",
+                depositos: "Einzahlungen",
+                retiros: "Abhebungen",
+                buscar_placeholder: "Suchen (Netflix, Supermarkt…)",
+                todos_tipos: "Alle Typen",
+                todas_cuentas: "Alle Konten",
+                filtrar: "Filtern",
+                limpiar: "Löschen",
+                filtros_activos: "Aktive Filter — {{count}} Ergebnis(se)",
+                transacciones_tab: "Transaktionen",
+                cuentas_tab: "Verknüpfte Konten",
+                col_id: "#",
+                col_fecha: "Datum",
+                col_tipo: "Typ",
+                col_metodo: "Methode",
+                col_monto: "Betrag",
+                col_saldo_post: "Nachguthaben",
+                col_descripcion: "Beschreibung",
+                col_destinatario: "Empfänger",
+                col_estado: "Status",
+                sin_transacciones: "Keine Transaktionen für die ausgewählten Filter.",
+                pg_info: "{{actual}}/{{total}} · {{count}} Transaktionen",
+                principal: "Haupt",
+                sin_saldo: "Kein Guthaben erfasst",
+                vence: "läuft ab",
+                tipo_cuenta_label: "Position",
+            },
+            lang: { titulo: "Sprache" },
+        },
+    },
+};
+
+// ── Inicialización ────────────────────────────────────────────────────────────
+i18n
+    .use(initReactI18next)
+    .init({
+        resources,
+        lng: localStorage.getItem("atm_idioma") || "es", // idioma inicial
+        fallbackLng: "es",
+        interpolation: {
+            escapeValue: false, // React ya protege contra XSS
+        },
+    });
+
+export default i18n;

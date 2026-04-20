@@ -1,4 +1,8 @@
+// ── Actividad.jsx ─────────────────────────────────────────────────────────────
+// Todos los textos estáticos ahora usan t() de i18next.
+// ─────────────────────────────────────────────────────────────────────────────
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import {
     BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
     XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -7,7 +11,6 @@ import ImportarNav from "../../Importar nav/importar-nav";
 import { getActividadCompleta, exportarActividadCSV } from "../../Api/Api_cliente/Actividad";
 import "../../Css/actividad.css";
 
-// ── Colores gráficos ─────────────────────────────────────────
 const C_DEP  = "#4ade80";
 const C_RET  = "#f87171";
 const C_TRF  = "#60a5fa";
@@ -15,7 +18,6 @@ const C_OTR  = "#fbbf24";
 const PIE_COLORS = [C_DEP, C_RET, C_TRF, C_OTR, "#a78bfa", "#fb923c"];
 const TIPOS = ["Todos", "Deposito", "Retiro", "Transferencia", "Consulta_saldo", "Pago_servicio"];
 
-// ── Helpers ──────────────────────────────────────────────────
 const fmtMonto = (n) =>
     Number(n || 0).toLocaleString("es-BO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -26,7 +28,7 @@ const fmtMes = (clave) => {
     if (!clave) return "";
     const [anio, mes] = clave.split("-");
     const n = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
-    return `${n[parseInt(mes,10)-1]} ${anio}`;
+    return `${n[parseInt(mes, 10) - 1]} ${anio}`;
 };
 
 const colorTipo = (tipo) => {
@@ -45,7 +47,6 @@ const descargarCSV = (csv, filename) => {
     URL.revokeObjectURL(url);
 };
 
-// ── Tooltip personalizado ────────────────────────────────────
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     return (
@@ -61,9 +62,9 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 // ════════════════════════════════════════════════════════════
-//  Componente principal
-// ════════════════════════════════════════════════════════════
 function Actividad() {
+    const { t } = useTranslation();
+
     const [datos, setDatos]           = useState(null);
     const [loading, setLoading]       = useState(true);
     const [error, setError]           = useState(null);
@@ -95,17 +96,17 @@ function Actividad() {
     }, [nombre_completo]);
 
     useEffect(() => {
-        if (!nombre_completo) { setError("No hay sesión activa."); setLoading(false); return; }
+        if (!nombre_completo) { setError(t("act.sin_sesion")); setLoading(false); return; }
         cargarDatos();
     }, [cargarDatos]);
 
     const aplicarFiltros = () => {
         const f = {};
-        if (filtrosPendientes.fecha_desde)                        f.fecha_desde      = filtrosPendientes.fecha_desde;
-        if (filtrosPendientes.fecha_hasta)                        f.fecha_hasta      = filtrosPendientes.fecha_hasta;
-        if (filtrosPendientes.tipo_transaccion !== "Todos")       f.tipo_transaccion = filtrosPendientes.tipo_transaccion;
-        if (filtrosPendientes.palabra_clave)                      f.palabra_clave    = filtrosPendientes.palabra_clave;
-        if (filtrosPendientes.numero_cuenta)                      f.numero_cuenta    = filtrosPendientes.numero_cuenta;
+        if (filtrosPendientes.fecha_desde)                  f.fecha_desde      = filtrosPendientes.fecha_desde;
+        if (filtrosPendientes.fecha_hasta)                  f.fecha_hasta      = filtrosPendientes.fecha_hasta;
+        if (filtrosPendientes.tipo_transaccion !== "Todos") f.tipo_transaccion = filtrosPendientes.tipo_transaccion;
+        if (filtrosPendientes.palabra_clave)                f.palabra_clave    = filtrosPendientes.palabra_clave;
+        if (filtrosPendientes.numero_cuenta)                f.numero_cuenta    = filtrosPendientes.numero_cuenta;
         setFiltrosAplicados(f);
         cargarDatos(f);
     };
@@ -122,28 +123,33 @@ function Actividad() {
         try {
             const { csv } = await exportarActividadCSV(nombre_completo, filtrosAplicados);
             csv ? descargarCSV(csv, `actividad_${nombre_completo.replace(/\s/g,"_")}_${Date.now()}.csv`)
-                : alert("Sin datos para exportar.");
-        } catch { alert("Error al exportar CSV."); }
+                : alert(t("act.sin_datos_exportar"));
+        } catch { alert(t("act.error_exportar")); }
         finally { setExportando(false); }
     };
 
     const handleExportarPDF = async () => {
         if (!datos?.transacciones?.length) return;
         try {
-            const { jsPDF }   = await import("jspdf");
-            const autoTable   = (await import("jspdf-autotable")).default;
+            const { jsPDF } = await import("jspdf");
+            const autoTable = (await import("jspdf-autotable")).default;
             const doc = new jsPDF({ orientation: "landscape" });
             doc.setFontSize(16);
-            doc.text(`Actividad — ${datos.usuario.nombre_completo}`, 14, 16);
+            doc.text(`${t("nav.actividad")} — ${datos.usuario.nombre_completo}`, 14, 16);
             doc.setFontSize(9);
-            doc.text(`Generado: ${new Date().toLocaleDateString("es-ES")}`, 14, 22);
+            doc.text(`${new Date().toLocaleDateString("es-ES")}`, 14, 22);
             autoTable(doc, {
                 startY: 26,
-                head: [["ID","Fecha","Tipo","Método","Monto","Saldo Post.","Descripción","Destinatario","Estado"]],
-                body: datos.transacciones.map((t) => [
-                    t.transaccion_id, fmtFecha(t.Fecha_transaccion), t.tipo_transaccion,
-                    t.Metodo_transaccion, `Bs. ${fmtMonto(t.Monto)}`, `Bs. ${fmtMonto(t.Saldo_posterior)}`,
-                    t.Descripcion || "—", t.nombre_destinatario || "—", t.estado_transaccion,
+                head: [[
+                    t("act.col_id"), t("act.col_fecha"), t("act.col_tipo"),
+                    t("act.col_metodo"), t("act.col_monto"), t("act.col_saldo_post"),
+                    t("act.col_descripcion"), t("act.col_destinatario"), t("act.col_estado"),
+                ]],
+                body: datos.transacciones.map((tx) => [
+                    tx.transaccion_id, fmtFecha(tx.Fecha_transaccion), tx.tipo_transaccion,
+                    tx.Metodo_transaccion, `Bs. ${fmtMonto(tx.Monto)}`,
+                    `Bs. ${fmtMonto(tx.Saldo_posterior)}`,
+                    tx.Descripcion || "—", tx.nombre_destinatario || "—", tx.estado_transaccion,
                 ]),
                 styles: { fontSize: 7, cellPadding: 2 },
                 headStyles: { fillColor: [13, 13, 13] },
@@ -153,21 +159,18 @@ function Actividad() {
         } catch { handleExportarCSV(); }
     };
 
-    // ── Paginación ───────────────────────────────────────────
     const transacciones = datos?.transacciones || [];
     const totalPaginas  = Math.ceil(transacciones.length / POR_PAGINA);
-    const txPagina      = transacciones.slice((paginaActual-1)*POR_PAGINA, paginaActual*POR_PAGINA);
-
+    const txPagina      = transacciones.slice((paginaActual - 1) * POR_PAGINA, paginaActual * POR_PAGINA);
     const datosGrafico  = (datos?.actividadMensual || []).map((d) => ({ ...d, label: fmtMes(d.mes) }));
     const cuentasUnicas = [...new Map((datos?.cuentas || []).map((c) => [c.cuenta_id, c])).values()];
 
-    // ── Loading / Error inicial ──────────────────────────────
     if (loading && !datos) return (
         <div className="actividad">
             <ImportarNav />
             <div className="act-page-loading">
                 <div className="act-spinner" />
-                <p>Cargando actividad…</p>
+                <p>{t("act.cargando")}</p>
             </div>
         </div>
     );
@@ -189,58 +192,52 @@ function Actividad() {
         <div className="actividad">
             <ImportarNav />
 
-            {/* ── KPI Cards ──────────────────────────────────── */}
+            {/* ── KPI Cards ──────────────────────────────────────────────── */}
             <div className="act-kpis">
-                {/* Card: Depósitos */}
                 <div className="kpi-card holo-card kpi-deposito">
                     <div className="holo-shine" />
                     <div className="kpi-icon"><i className="ti ti-arrow-down-circle" /></div>
                     <div className="kpi-body">
-                        <span className="kpi-label">Total Depósitos</span>
+                        <span className="kpi-label">{t("act.total_depositos")}</span>
                         <span className="kpi-value">Bs. {fmtMonto(resumen?.totalDepositos)}</span>
                     </div>
                 </div>
-
-                {/* Card: Retiros */}
                 <div className="kpi-card holo-card kpi-retiro">
                     <div className="holo-shine" />
                     <div className="kpi-icon"><i className="ti ti-arrow-up-circle" /></div>
                     <div className="kpi-body">
-                        <span className="kpi-label">Total Retiros</span>
+                        <span className="kpi-label">{t("act.total_retiros")}</span>
                         <span className="kpi-value">Bs. {fmtMonto(resumen?.totalRetiros)}</span>
                     </div>
                 </div>
-
-                {/* Card: Transferencias */}
                 <div className="kpi-card holo-card kpi-transferencia">
                     <div className="holo-shine" />
                     <div className="kpi-icon"><i className="ti ti-arrows-exchange" /></div>
                     <div className="kpi-body">
-                        <span className="kpi-label">Transferencias</span>
+                        <span className="kpi-label">{t("act.transferencias")}</span>
                         <span className="kpi-value">Bs. {fmtMonto(resumen?.totalTransferencias)}</span>
                     </div>
                 </div>
-
-                {/* Card: Balance + exportar */}
                 <div className="kpi-card holo-card kpi-balance">
                     <div className="holo-shine" />
                     <div className="kpi-icon"><i className="ti ti-chart-bar" /></div>
                     <div className="kpi-body">
-                        <span className="kpi-label">Balance neto</span>
+                        <span className="kpi-label">{t("act.balance_neto")}</span>
                         <span className="kpi-value">Bs. {fmtMonto(resumen?.balance)}</span>
                     </div>
                     <div className="act-export-btns" style={{ marginLeft: "auto" }}>
                         <button className="btn-export" onClick={handleExportarCSV} disabled={exportando}>
-                            <i className="ti ti-file-text" />{exportando ? "…" : "CSV"}
+                            <i className="ti ti-file-text" />
+                            {exportando ? t("act.exportando") : t("act.csv")}
                         </button>
                         <button className="btn-export btn-export-pdf" onClick={handleExportarPDF}>
-                            <i className="ti ti-file-type-pdf" />PDF
+                            <i className="ti ti-file-type-pdf" />{t("act.pdf")}
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* ── Notificaciones ─────────────────────────────── */}
+            {/* ── Notificaciones ─────────────────────────────────────────── */}
             {notificaciones?.length > 0 && (
                 <div className="act-notifs">
                     {notificaciones.map((n, i) => (
@@ -252,15 +249,23 @@ function Actividad() {
                 </div>
             )}
 
-            {/* ── Gráfico ────────────────────────────────────── */}
+            {/* ── Gráfico ────────────────────────────────────────────────── */}
             <div className="act-chart-section">
                 <div className="holo-card chart-inner">
                     <div className="holo-shine" />
                     <div className="card-header-row chart-header">
-                        <h2>Actividad mensual</h2>
+                        <h2>{t("act.actividad_mensual")}</h2>
                         <div className="chart-tabs">
-                            {[["barras","ti-chart-bar","Barras"],["linea","ti-chart-line","Línea"],["pie","ti-chart-donut","Distribución"]].map(([v,ic,lb]) => (
-                                <button key={v} className={`chart-tab ${vistaGrafico===v?"active":""}`} onClick={() => setVistaGrafico(v)}>
+                            {[
+                                ["barras", "ti-chart-bar",   t("act.barras")],
+                                ["linea",  "ti-chart-line",  t("act.linea")],
+                                ["pie",    "ti-chart-donut", t("act.distribucion")],
+                            ].map(([v, ic, lb]) => (
+                                <button
+                                    key={v}
+                                    className={`chart-tab ${vistaGrafico === v ? "active" : ""}`}
+                                    onClick={() => setVistaGrafico(v)}
+                                >
                                     <i className={`ti ${ic}`} />{lb}
                                 </button>
                             ))}
@@ -271,13 +276,13 @@ function Actividad() {
                         <ResponsiveContainer width="100%" height={260}>
                             <BarChart data={datosGrafico} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.07)" />
-                                <XAxis dataKey="label" tick={{ fill:"#94a3b8", fontSize:11 }} />
-                                <YAxis tick={{ fill:"#94a3b8", fontSize:11 }} />
+                                <XAxis dataKey="label" tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                                <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} />
                                 <Tooltip content={<CustomTooltip />} />
-                                <Legend wrapperStyle={{ color:"#94a3b8", fontSize:12 }} />
-                                <Bar dataKey="depositos"      name="Depósitos"      fill={C_DEP} radius={[4,4,0,0]} />
-                                <Bar dataKey="retiros"        name="Retiros"        fill={C_RET} radius={[4,4,0,0]} />
-                                <Bar dataKey="transferencias" name="Transferencias" fill={C_TRF} radius={[4,4,0,0]} />
+                                <Legend wrapperStyle={{ color: "#94a3b8", fontSize: 12 }} />
+                                <Bar dataKey="depositos"      name={t("act.depositos")}      fill={C_DEP} radius={[4,4,0,0]} />
+                                <Bar dataKey="retiros"        name={t("act.retiros")}        fill={C_RET} radius={[4,4,0,0]} />
+                                <Bar dataKey="transferencias" name={t("act.transferencias")} fill={C_TRF} radius={[4,4,0,0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     )}
@@ -285,13 +290,13 @@ function Actividad() {
                         <ResponsiveContainer width="100%" height={260}>
                             <LineChart data={datosGrafico} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.07)" />
-                                <XAxis dataKey="label" tick={{ fill:"#94a3b8", fontSize:11 }} />
-                                <YAxis tick={{ fill:"#94a3b8", fontSize:11 }} />
+                                <XAxis dataKey="label" tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                                <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} />
                                 <Tooltip content={<CustomTooltip />} />
-                                <Legend wrapperStyle={{ color:"#94a3b8", fontSize:12 }} />
-                                <Line type="monotone" dataKey="depositos"      name="Depósitos"      stroke={C_DEP} strokeWidth={2} dot={false} />
-                                <Line type="monotone" dataKey="retiros"        name="Retiros"        stroke={C_RET} strokeWidth={2} dot={false} />
-                                <Line type="monotone" dataKey="transferencias" name="Transferencias" stroke={C_TRF} strokeWidth={2} dot={false} />
+                                <Legend wrapperStyle={{ color: "#94a3b8", fontSize: 12 }} />
+                                <Line type="monotone" dataKey="depositos"      name={t("act.depositos")}      stroke={C_DEP} strokeWidth={2} dot={false} />
+                                <Line type="monotone" dataKey="retiros"        name={t("act.retiros")}        stroke={C_RET} strokeWidth={2} dot={false} />
+                                <Line type="monotone" dataKey="transferencias" name={t("act.transferencias")} stroke={C_TRF} strokeWidth={2} dot={false} />
                             </LineChart>
                         </ResponsiveContainer>
                     )}
@@ -302,7 +307,7 @@ function Actividad() {
                                     data={resumen?.distribucionPorTipo || []}
                                     dataKey="total" nameKey="tipo"
                                     cx="50%" cy="50%" outerRadius={100}
-                                    label={({ tipo, percent }) => `${tipo} ${(percent*100).toFixed(0)}%`}
+                                    label={({ tipo, percent }) => `${tipo} ${(percent * 100).toFixed(0)}%`}
                                     labelLine={false}
                                 >
                                     {(resumen?.distribucionPorTipo || []).map((_, i) => (
@@ -310,45 +315,48 @@ function Actividad() {
                                     ))}
                                 </Pie>
                                 <Tooltip formatter={(v) => `Bs. ${fmtMonto(v)}`} />
-                                <Legend wrapperStyle={{ color:"#94a3b8", fontSize:12 }} />
+                                <Legend wrapperStyle={{ color: "#94a3b8", fontSize: 12 }} />
                             </PieChart>
                         </ResponsiveContainer>
                     )}
                 </div>
             </div>
 
-            {/* ── Filtros ────────────────────────────────────── */}
+            {/* ── Filtros ────────────────────────────────────────────────── */}
             <div className="act-filters holo-card">
                 <div className="holo-shine" />
                 <div className="filter-row">
-                    {/* Búsqueda */}
                     <div className="filter-group filter-search">
                         <i className="ti ti-search" />
                         <input
                             type="text"
-                            placeholder="Buscar (Netflix, supermercado…)"
+                            placeholder={t("act.buscar_placeholder")}
                             value={filtrosPendientes.palabra_clave}
-                            onChange={(e) => setFiltrosPendientes(p => ({ ...p, palabra_clave: e.target.value }))}
+                            onChange={(e) => setFiltrosPendientes((p) => ({ ...p, palabra_clave: e.target.value }))}
                             onKeyDown={(e) => e.key === "Enter" && aplicarFiltros()}
                         />
                     </div>
-
-                    {/* Tipo */}
                     <div className="filter-group">
                         <i className="ti ti-tag" />
-                        <select value={filtrosPendientes.tipo_transaccion}
-                            onChange={(e) => setFiltrosPendientes(p => ({ ...p, tipo_transaccion: e.target.value }))}>
-                            {TIPOS.map((t) => <option key={t} value={t}>{t === "Todos" ? "Todos los tipos" : t}</option>)}
+                        <select
+                            value={filtrosPendientes.tipo_transaccion}
+                            onChange={(e) => setFiltrosPendientes((p) => ({ ...p, tipo_transaccion: e.target.value }))}
+                        >
+                            {TIPOS.map((tp) => (
+                                <option key={tp} value={tp}>
+                                    {tp === "Todos" ? t("act.todos_tipos") : tp}
+                                </option>
+                            ))}
                         </select>
                     </div>
-
-                    {/* Cuenta (solo si hay más de una) */}
                     {cuentasUnicas.length > 1 && (
                         <div className="filter-group">
                             <i className="ti ti-wallet" />
-                            <select value={filtrosPendientes.numero_cuenta}
-                                onChange={(e) => setFiltrosPendientes(p => ({ ...p, numero_cuenta: e.target.value }))}>
-                                <option value="">Todas las cuentas</option>
+                            <select
+                                value={filtrosPendientes.numero_cuenta}
+                                onChange={(e) => setFiltrosPendientes((p) => ({ ...p, numero_cuenta: e.target.value }))}
+                            >
+                                <option value="">{t("act.todas_cuentas")}</option>
                                 {cuentasUnicas.map((c) => (
                                     <option key={c.cuenta_id} value={c.Numero_cuenta}>
                                         {c.Numero_cuenta} · {c.Tipo_cuenta}
@@ -357,46 +365,49 @@ function Actividad() {
                             </select>
                         </div>
                     )}
-
-                    {/* Fechas */}
                     <div className="filter-group filter-date">
                         <i className="ti ti-calendar" />
                         <input type="date" value={filtrosPendientes.fecha_desde}
-                            onChange={(e) => setFiltrosPendientes(p => ({ ...p, fecha_desde: e.target.value }))} />
+                            onChange={(e) => setFiltrosPendientes((p) => ({ ...p, fecha_desde: e.target.value }))} />
                         <span>—</span>
                         <input type="date" value={filtrosPendientes.fecha_hasta}
-                            onChange={(e) => setFiltrosPendientes(p => ({ ...p, fecha_hasta: e.target.value }))} />
+                            onChange={(e) => setFiltrosPendientes((p) => ({ ...p, fecha_hasta: e.target.value }))} />
                     </div>
-
                     <button className="btn-filtrar" onClick={aplicarFiltros}>
-                        <i className="ti ti-filter" /> Filtrar
+                        <i className="ti ti-filter" /> {t("act.filtrar")}
                     </button>
                     <button className="btn-limpiar" onClick={limpiarFiltros}>
-                        <i className="ti ti-x" /> Limpiar
+                        <i className="ti ti-x" /> {t("act.limpiar")}
                     </button>
                 </div>
 
                 {hayFiltros && (
                     <div className="filtros-activos">
                         <i className="ti ti-filter-check" />
-                        <span>Filtros activos — {transacciones.length} resultado(s)</span>
+                        <span>{t("act.filtros_activos", { count: transacciones.length })}</span>
                     </div>
                 )}
             </div>
 
-            {/* ── Tabs ───────────────────────────────────────── */}
+            {/* ── Tabs ───────────────────────────────────────────────────── */}
             <div className="act-tabs">
-                <button className={`act-tab ${tabActiva==="transacciones"?"active":""}`} onClick={() => setTabActiva("transacciones")}>
-                    <i className="ti ti-receipt" /> Transacciones
+                <button
+                    className={`act-tab ${tabActiva === "transacciones" ? "active" : ""}`}
+                    onClick={() => setTabActiva("transacciones")}
+                >
+                    <i className="ti ti-receipt" /> {t("act.transacciones_tab")}
                     <span className="act-tab-count">{transacciones.length}</span>
                 </button>
-                <button className={`act-tab ${tabActiva==="cuentas"?"active":""}`} onClick={() => setTabActiva("cuentas")}>
-                    <i className="ti ti-credit-card" /> Cuentas vinculadas
+                <button
+                    className={`act-tab ${tabActiva === "cuentas" ? "active" : ""}`}
+                    onClick={() => setTabActiva("cuentas")}
+                >
+                    <i className="ti ti-credit-card" /> {t("act.cuentas_tab")}
                     <span className="act-tab-count">{cuentasUnicas.length}</span>
                 </button>
             </div>
 
-            {/* ── Tabla transacciones ────────────────────────── */}
+            {/* ── Tabla transacciones ────────────────────────────────────── */}
             {tabActiva === "transacciones" && (
                 <div className="act-table-section">
                     {loading
@@ -405,7 +416,7 @@ function Actividad() {
                             ? (
                                 <div className="act-empty">
                                     <i className="ti ti-inbox" />
-                                    <p>Sin transacciones para los filtros seleccionados.</p>
+                                    <p>{t("act.sin_transacciones")}</p>
                                 </div>
                             ) : (
                                 <>
@@ -413,36 +424,38 @@ function Actividad() {
                                         <table className="act-table">
                                             <thead>
                                                 <tr>
-                                                    <th>#</th>
-                                                    <th>Fecha</th>
-                                                    <th>Tipo</th>
-                                                    <th>Método</th>
-                                                    <th>Monto</th>
-                                                    <th>Saldo Post.</th>
-                                                    <th>Descripción</th>
-                                                    <th>Destinatario</th>
-                                                    <th>Estado</th>
+                                                    
+                                                    <th>{t("act.col_fecha")}</th>
+                                                    <th>{t("act.col_tipo")}</th>
+                                                    <th>{t("act.col_metodo")}</th>
+                                                    <th>{t("act.col_monto")}</th>
+                                                    <th>{t("act.col_saldo_post")}</th>
+                                                    <th>{t("act.col_descripcion")}</th>
+                                                    <th>{t("act.col_destinatario")}</th>
+                                                    <th>{t("act.col_estado")}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {txPagina.map((t) => (
-                                                    <tr key={t.transaccion_id}>
-                                                        <td data-label="#" className="td-id">{t.transaccion_id}</td>
-                                                        <td data-label="Fecha" className="td-fecha">{fmtFecha(t.Fecha_transaccion)}</td>
-                                                        <td data-label="Tipo">
-                                                            <span className={`badge ${colorTipo(t.tipo_transaccion)}`}>{t.tipo_transaccion}</span>
+                                                {txPagina.map((tx) => (
+                                                    <tr key={tx.transaccion_id}>
+                                                        
+                                                        <td data-label={t("act.col_fecha")}   className="td-fecha">{fmtFecha(tx.Fecha_transaccion)}</td>
+                                                        <td data-label={t("act.col_tipo")}>
+                                                            <span className={`badge ${colorTipo(tx.tipo_transaccion)}`}>{tx.tipo_transaccion}</span>
                                                         </td>
-                                                        <td data-label="Método">{t.Metodo_transaccion || "—"}</td>
-                                                        <td data-label="Monto"
-                                                            className={(t.tipo_transaccion||"").toLowerCase()==="deposito" ? "monto-positivo" : "monto-negativo"}>
-                                                            {(t.tipo_transaccion||"").toLowerCase()==="deposito" ? "+" : "−"}
-                                                            Bs. {fmtMonto(t.Monto)}
+                                                        <td data-label={t("act.col_metodo")}>{tx.Metodo_transaccion || "—"}</td>
+                                                        <td
+                                                            data-label={t("act.col_monto")}
+                                                            className={(tx.tipo_transaccion||"").toLowerCase() === "deposito" ? "monto-positivo" : "monto-negativo"}
+                                                        >
+                                                            {(tx.tipo_transaccion||"").toLowerCase() === "deposito" ? "+" : "−"}
+                                                            Bs. {fmtMonto(tx.Monto)}
                                                         </td>
-                                                        <td data-label="Saldo Post.">Bs. {fmtMonto(t.Saldo_posterior)}</td>
-                                                        <td data-label="Descripción" className="td-desc">{t.Descripcion || "—"}</td>
-                                                        <td data-label="Destinatario">{t.nombre_destinatario || "—"}</td>
-                                                        <td data-label="Estado">
-                                                            <span className={`estado-badge estado-${t.estado_transaccion}`}>{t.estado_transaccion}</span>
+                                                        <td data-label={t("act.col_saldo_post")}>Bs. {fmtMonto(tx.Saldo_posterior)}</td>
+                                                        <td data-label={t("act.col_descripcion")} className="td-desc">{tx.Descripcion || "—"}</td>
+                                                        <td data-label={t("act.col_destinatario")}>{tx.nombre_destinatario || "—"}</td>
+                                                        <td data-label={t("act.col_estado")}>
+                                                            <span className={`estado-badge estado-${tx.estado_transaccion}`}>{tx.estado_transaccion}</span>
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -452,19 +465,21 @@ function Actividad() {
 
                                     {totalPaginas > 1 && (
                                         <div className="paginacion">
-                                            <button disabled={paginaActual===1} onClick={() => setPaginaActual(1)}>«</button>
-                                            <button disabled={paginaActual===1} onClick={() => setPaginaActual(p=>p-1)}>‹</button>
+                                            <button disabled={paginaActual === 1} onClick={() => setPaginaActual(1)}>«</button>
+                                            <button disabled={paginaActual === 1} onClick={() => setPaginaActual((p) => p - 1)}>‹</button>
                                             {Array.from({ length: Math.min(totalPaginas, 5) }, (_, i) => {
-                                                const pg = Math.max(1, Math.min(paginaActual-2, totalPaginas-4)) + i;
+                                                const pg = Math.max(1, Math.min(paginaActual - 2, totalPaginas - 4)) + i;
                                                 return (
-                                                    <button key={pg} className={paginaActual===pg?"pg-active":""} onClick={() => setPaginaActual(pg)}>
+                                                    <button key={pg} className={paginaActual === pg ? "pg-active" : ""} onClick={() => setPaginaActual(pg)}>
                                                         {pg}
                                                     </button>
                                                 );
                                             })}
-                                            <button disabled={paginaActual===totalPaginas} onClick={() => setPaginaActual(p=>p+1)}>›</button>
-                                            <button disabled={paginaActual===totalPaginas} onClick={() => setPaginaActual(totalPaginas)}>»</button>
-                                            <span className="pg-info">{paginaActual}/{totalPaginas} · {transacciones.length} transacciones</span>
+                                            <button disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual((p) => p + 1)}>›</button>
+                                            <button disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(totalPaginas)}>»</button>
+                                            <span className="pg-info">
+                                                {t("act.pg_info", { actual: paginaActual, total: totalPaginas, count: transacciones.length })}
+                                            </span>
                                         </div>
                                     )}
                                 </>
@@ -473,34 +488,37 @@ function Actividad() {
                 </div>
             )}
 
-            {/* ── Cuentas vinculadas ─────────────────────────── */}
+            {/* ── Cuentas vinculadas ─────────────────────────────────────── */}
             {tabActiva === "cuentas" && (
                 <div className="act-cuentas">
                     {cuentasUnicas.map((c) => (
                         <div key={c.cuenta_id} className="cuenta-card holo-card">
                             <div className="holo-shine" />
-                            {c.Es_principal === 1 && <span className="cuenta-badge-principal">Principal</span>}
-
+                            {c.Es_principal === 1 && (
+                                <span className="cuenta-badge-principal">{t("act.principal")}</span>
+                            )}
                             <div className="cuenta-top">
                                 <div>
                                     <p className="cuenta-numero">{c.Numero_cuenta}</p>
-                                    <p className="cuenta-tipo">{c.Tipo_cuenta} · Posición {c.Orden}</p>
+                                    <p className="cuenta-tipo">
+                                        {c.Tipo_cuenta} · {t("act.tipo_cuenta_label")} {c.Orden}
+                                    </p>
                                 </div>
                                 <span className={`estado-cuenta estado-${c.estado_cuenta}`}>{c.estado_cuenta}</span>
                             </div>
-
                             {c.Numero_tarjeta && (
                                 <div className="cuenta-tarjeta">
                                     <i className="ti ti-credit-card" />
                                     <span>•••• {c.Numero_tarjeta.slice(-4)}</span>
                                     <span className="cuenta-tarjeta-tipo">{c.Tipo_tarjeta}</span>
-                                    <span className="cuenta-tarjeta-venc">vence {fmtFecha(c.Fecha_vencimiento)}</span>
+                                    <span className="cuenta-tarjeta-venc">
+                                        {t("act.vence")} {fmtFecha(c.Fecha_vencimiento)}
+                                    </span>
                                 </div>
                             )}
-
                             <div className="cuenta-saldos">
                                 {(c.saldos || []).length === 0
-                                    ? <p className="sin-saldo">Sin saldo registrado</p>
+                                    ? <p className="sin-saldo">{t("act.sin_saldo")}</p>
                                     : (c.saldos || []).map((s) => (
                                         <div key={s.Codigo} className="saldo-moneda-row">
                                             <span className="saldo-codigo">{s.Codigo}</span>

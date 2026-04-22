@@ -68,7 +68,7 @@ export default function TransferirDinero() {
     const [detalleConversion, setDetalleConv]   = useState(null);
 
     // Sesión
-    const [numeroCuenta, setNumeroCuenta] = useState("");
+    
     const [loadingSesion, setLoadSesion]  = useState(true);
     const [errorSesion, setErrorSesion]   = useState("");
 
@@ -83,7 +83,7 @@ export default function TransferirDinero() {
         const { nombre_completo } = JSON.parse(sesion);
         getDatosUsuario(nombre_completo)
             .then((data) => {
-                setNumeroCuenta(data.usuario.cuenta.numero_cuenta);
+                
                 setCuentaOrig(data.usuario.cuenta.numero_cuenta);
             })
             .catch(() => setErrorSesion("Error al cargar datos de sesión."))

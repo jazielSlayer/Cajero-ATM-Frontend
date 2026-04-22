@@ -96,9 +96,10 @@ function Actividad() {
     }, [nombre_completo]);
 
     useEffect(() => {
-        if (!nombre_completo) { setError(t("act.sin_sesion")); setLoading(false); return; }
-        cargarDatos();
-    }, [cargarDatos]);
+    if (!nombre_completo) { setError(t("act.sin_sesion")); setLoading(false); return; }
+    cargarDatos();
+}, [cargarDatos, nombre_completo, t]);
+
 
     const aplicarFiltros = () => {
         const f = {};
@@ -185,7 +186,7 @@ function Actividad() {
         </div>
     );
 
-    const { usuario, resumen, notificaciones } = datos || {};
+    const { resumen, notificaciones } = datos || {};
     const hayFiltros = Object.keys(filtrosAplicados).length > 0;
 
     return (

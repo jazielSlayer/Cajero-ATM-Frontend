@@ -5,7 +5,7 @@ import ImportarNav from "../../Importar nav/importar-nav";
 import { getDatosUsuario } from "../../Api/Api_cliente/Datos_cliente";
 
 function Cliente() {
-    const { t } = useTranslation();
+    
     const [datos, setDatos] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

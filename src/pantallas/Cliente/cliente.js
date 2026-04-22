@@ -5,7 +5,8 @@ import ImportarNav from "../../Importar nav/importar-nav";
 import { getDatosUsuario } from "../../Api/Api_cliente/Datos_cliente";
 
 function Cliente() {
-    
+    const { t } = useTranslation();
+
     const [datos, setDatos] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,25 +15,23 @@ function Cliente() {
 
     useEffect(() => {
         const sesion = sessionStorage.getItem("usuario_atm");
-        
-        if (!sesion) { setError("No se encontró el usuario en sesión."); setLoading(false); return; }
+
+        if (!sesion) { setError(t("cli.sin_sesion")); setLoading(false); return; }
         const { nombre_completo } = JSON.parse(sesion);
-        if (!nombre_completo) { setError("No se encontró el nombre del usuario en sesión."); setLoading(false); return; }
+        if (!nombre_completo) { setError(t("cli.sin_nombre")); setLoading(false); return; }
         getDatosUsuario(nombre_completo)
             .then((data) => { setDatos(data); setLoading(false); })
-            .catch(() => { setError("Error al cargar los datos del usuario."); setLoading(false); });
-    }, []);
+            .catch(() => { setError(t("cli.error_carga")); setLoading(false); });
+    }, [t]);
 
-    if (loading) return <div className="cliente"><ImportarNav /><p className="loading">Cargando datos...</p></div>;
+    if (loading) return <div className="cliente"><ImportarNav /><p className="loading">{t("cli.cargando")}</p></div>;
     if (error)   return <div className="cliente"><ImportarNav /><p className="error">{error}</p></div>;
 
     const { usuario, transferencias, depositos, retiros } = datos;
-    
-    const tarjetaMascarada = usuario.tarjeta.numero_tarjeta
-        ?  usuario.tarjeta.numero_tarjeta
-        : "**** **** ****";
 
-    
+    const tarjetaMascarada = usuario.tarjeta.numero_tarjeta
+        ? usuario.tarjeta.numero_tarjeta
+        : "**** **** ****";
 
     const numeroVisibleTarjeta = datosOcultosTarjeta
         ? "**** **** **** ****"
@@ -44,9 +43,6 @@ function Cliente() {
 
     const ocultar = (valor) => datosOcultos ? "************" : valor;
 
-    
-
-   
     const ultimasTransacciones = [
         ...transferencias.map(t => ({ ...t, _tipo: "Transferencia" })),
         ...depositos.map(t => ({ ...t, _tipo: "Deposito" })),
@@ -54,7 +50,6 @@ function Cliente() {
     ]
         .sort((a, b) => new Date(b.Fecha_transaccion) - new Date(a.Fecha_transaccion))
         .slice(0, 6);
-   
 
     return (
         <div className="cliente">
@@ -62,15 +57,15 @@ function Cliente() {
 
             <div className="info-cards">
 
-            
+                {/* ── Cuenta ─────────────────────────────────────────────── */}
                 <div className="account-info holo-card">
                     <div className="holo-shine" />
                     <div className="card-header-row">
-                        <h2>Cuenta</h2>
+                        <h2>{t("cli.cuenta")}</h2>
                         <button
                             className="btn-ocultar"
                             onClick={() => setDatosOcultos(!datosOcultos)}
-                            title={datosOcultos ? "Mostrar datos" : "Ocultar datos"}
+                            title={datosOcultos ? t("cli.mostrar_datos") : t("cli.ocultar_datos")}
                         >
                             {datosOcultos
                                 ? <i className="ti ti-eye" />
@@ -78,12 +73,12 @@ function Cliente() {
                             }
                         </button>
                     </div>
-                    <p><span className="label">Número:</span> {ocultar(usuario.cuenta.numero_cuenta)}</p>
-                    <p><span className="label">Saldo:</span> {ocultar("$" + Number(usuario.cuenta.saldo).toLocaleString("es-BO", { minimumFractionDigits: 2 }))}</p>
-                    <p><span className="label">Estado:</span> {usuario.cuenta.estado}</p>
+                    <p><span className="label">{t("cli.numero")}:</span> {ocultar(usuario.cuenta.numero_cuenta)}</p>
+                    <p><span className="label">{t("cli.saldo")}:</span> {ocultar("$" + Number(usuario.cuenta.saldo).toLocaleString("es-BO", { minimumFractionDigits: 2 }))}</p>
+                    <p><span className="label">{t("cli.estado")}:</span> {usuario.cuenta.estado}</p>
                 </div>
 
-                {/* Tarjeta holográfica estilo banco */}
+                {/* ── Tarjeta holográfica ────────────────────────────────── */}
                 <div className="card-info holo-card tarjeta-banco">
                     <div className="holo-shine" />
                     <div className="card-header-row">
@@ -93,7 +88,7 @@ function Cliente() {
                         <button
                             className="btn-ocultar"
                             onClick={() => setDatosOcultosTarjeta(!datosOcultosTarjeta)}
-                            title={datosOcultosTarjeta ? "Mostrar datos" : "Ocultar datos"}
+                            title={datosOcultosTarjeta ? t("cli.mostrar_datos") : t("cli.ocultar_datos")}
                         >
                             {datosOcultosTarjeta
                                 ? <i className="ti ti-eye" />
@@ -104,57 +99,58 @@ function Cliente() {
                     <div className="tarjeta-numero">{numeroVisibleTarjeta}</div>
                     <div className="tarjeta-bottom">
                         <div>
-                            <span className="label-small">Titular</span>
+                            <span className="label-small">{t("cli.titular")}</span>
                             <p className="tarjeta-titular">{usuario.nombre} {usuario.apellido}</p>
                         </div>
                         <div>
-                            <span className="label-small">Vence</span>
+                            <span className="label-small">{t("cli.vence")}</span>
                             <p className="tarjeta-venc">{fechaVenc}</p>
                         </div>
                         <div>
-                            <span className="label-small">Tipo</span>
+                            <span className="label-small">{t("cli.tipo")}</span>
                             <p className="tarjeta-tipo">{usuario.tarjeta.tipo_tarjeta}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
+            {/* ── Historial ──────────────────────────────────────────────── */}
             <div className="historial">
-                <h2>Últimas transacciones</h2>
+                <h2>{t("cli.ultimas_transacciones")}</h2>
                 {ultimasTransacciones.length === 0 ? (
-                    <p className="sin-datos">No hay transacciones registradas.</p>
+                    <p className="sin-datos">{t("cli.sin_transacciones")}</p>
                 ) : (
                     <div className="tabla-responsive">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Fecha</th>
-                                    <th>Tipo</th>
-                                    <th>Método</th>
-                                    <th>Monto</th>
-                                    <th>Descripción</th>
-                                    <th>Destinatario</th>
-                                    <th>Estado</th>
+                                    <th>{t("cli.col_fecha")}</th>
+                                    <th>{t("cli.col_tipo")}</th>
+                                    <th>{t("cli.col_metodo")}</th>
+                                    <th>{t("cli.col_monto")}</th>
+                                    <th>{t("cli.col_descripcion")}</th>
+                                    <th>{t("cli.col_destinatario")}</th>
+                                    <th>{t("cli.col_estado")}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {ultimasTransacciones.map((t) => (
-                                    <tr key={t.transaccion_id}>
-                                        <td data-label="Fecha">
-                                            {new Date(t.Fecha_transaccion).toLocaleDateString("es-ES")}
+                                {ultimasTransacciones.map((tx) => (
+                                    <tr key={tx.transaccion_id}>
+                                        <td data-label={t("cli.col_fecha")}>
+                                            {new Date(tx.Fecha_transaccion).toLocaleDateString("es-ES")}
                                         </td>
-                                        <td data-label="Tipo">{t._tipo}</td>
-                                        <td data-label="Método">{t.Metodo_transaccion}</td>
+                                        <td data-label={t("cli.col_tipo")}>{tx._tipo}</td>
+                                        <td data-label={t("cli.col_metodo")}>{tx.Metodo_transaccion}</td>
                                         <td
-                                            data-label="Monto"
-                                            className={t._tipo === "Deposito" ? "monto-positivo" : "monto-negativo"}
+                                            data-label={t("cli.col_monto")}
+                                            className={tx._tipo === "Deposito" ? "monto-positivo" : "monto-negativo"}
                                         >
-                                            {t._tipo === "Deposito" ? "+" : "-"}
-                                            Bs. {Number(t.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
+                                            {tx._tipo === "Deposito" ? "+" : "-"}
+                                            Bs. {Number(tx.Monto).toLocaleString("es-BO", { minimumFractionDigits: 2 })}
                                         </td>
-                                        <td data-label="Descripción">{t.Descripcion ?? "-"}</td>
-                                        <td data-label="Destinatario">{t.nombre_destinatario ?? "-"}</td>
-                                        <td data-label="Estado">{t.estado_transaccion}</td>
+                                        <td data-label={t("cli.col_descripcion")}>{tx.Descripcion ?? "-"}</td>
+                                        <td data-label={t("cli.col_destinatario")}>{tx.nombre_destinatario ?? "-"}</td>
+                                        <td data-label={t("cli.col_estado")}>{tx.estado_transaccion}</td>
                                     </tr>
                                 ))}
                             </tbody>

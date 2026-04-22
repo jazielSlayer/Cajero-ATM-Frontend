@@ -1,33 +1,42 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "../../Css/Depositar.css";
 import ImportarNav from "../../Importar nav/importar-nav";
 import { iniciarRetiro, ejecutarRetiro } from "../../Api/Api_cliente/Hacer_Transaccion";
 import { IconThumbUpFilled } from "@tabler/icons-react";
 
-// ── Monedas disponibles (para mostrar info de bandera/símbolo) ────────────────
-const MONEDAS_INFO = {
-    BOB: { nombre: "Boliviano",       simbolo: "Bs",  bandera: "🇧🇴" },
-    USD: { nombre: "Dólar",           simbolo: "$",   bandera: "🇺🇸" },
-    EUR: { nombre: "Euro",            simbolo: "€",   bandera: "🇪🇺" },
-    BRL: { nombre: "Real brasileño",  simbolo: "R$",  bandera: "🇧🇷" },
-    ARS: { nombre: "Peso argentino",  simbolo: "$",   bandera: "🇦🇷" },
-    CLP: { nombre: "Peso chileno",    simbolo: "$",   bandera: "🇨🇱" },
-    PEN: { nombre: "Sol peruano",     simbolo: "S/",  bandera: "🇵🇪" },
-    COP: { nombre: "Peso colombiano", simbolo: "$",   bandera: "🇨🇴" },
+// Símbolos y banderas no necesitan traducción
+const MONEDAS_META = {
+    BOB: { simbolo: "Bs",  bandera: "🇧🇴" },
+    USD: { simbolo: "$",   bandera: "🇺🇸" },
+    EUR: { simbolo: "€",   bandera: "🇪🇺" },
+    BRL: { simbolo: "R$",  bandera: "🇧🇷" },
+    ARS: { simbolo: "$",   bandera: "🇦🇷" },
+    CLP: { simbolo: "$",   bandera: "🇨🇱" },
+    PEN: { simbolo: "S/",  bandera: "🇵🇪" },
+    COP: { simbolo: "$",   bandera: "🇨🇴" },
 };
 
-const MONEDAS_KEYS = Object.keys(MONEDAS_INFO);
-
-// ── Fases del wizard ──────────────────────────────────────────────────────────
-// 0: credenciales + monto   1: selección moneda salida
-// 2: confirmación conversión (solo si aplica)   3: éxito
-const PASOS_LABEL = ["Datos", "Moneda", "Confirmar", "Listo"];
-
-function getMeta(codigo) {
-    return MONEDAS_INFO[codigo] || { nombre: codigo, simbolo: "", bandera: "💱" };
-}
+const MONEDAS_KEYS = Object.keys(MONEDAS_META);
 
 export default function RetirarDinero() {
+    const { t } = useTranslation();
+
+    // Los nombres de moneda se traducen vía t(); el resto (símbolo/bandera)
+    // viene de MONEDAS_META para no duplicar datos estáticos.
+    const getMeta = (codigo) => ({
+        ...(MONEDAS_META[codigo] || { simbolo: "", bandera: "💱" }),
+        nombre: t(`dep.mon_${codigo}`, { defaultValue: codigo }),
+    });
+
+    // Los pasos del stepper son traducibles y se recalculan con el idioma activo
+    const PASOS_LABEL = [
+        t("ret.paso_datos"),
+        t("ret.paso_moneda"),
+        t("ret.paso_confirmar"),
+        t("ret.paso_listo"),
+    ];
+
     // ── Estado del formulario ─────────────────────────────────────────────────
     const [fase, setFase]               = useState(0);
     const [tarjeta, setTarjeta]         = useState("");
@@ -38,10 +47,10 @@ export default function RetirarDinero() {
     const [metodo, setMetodo]           = useState("ATM");
 
     // ── Respuestas del backend ────────────────────────────────────────────────
-    const [opciones, setOpciones]       = useState([]);       // fase 1
-    const [monedaSalida, setMonedaSal]  = useState(null);     // elegida en fase 1
-    const [detalleConv, setDetalleConv] = useState(null);     // fase 2
-    const [resultado, setResultado]     = useState(null);     // fase 3
+    const [opciones, setOpciones]       = useState([]);
+    const [monedaSalida, setMonedaSal]  = useState(null);
+    const [detalleConv, setDetalleConv] = useState(null);
+    const [resultado, setResultado]     = useState(null);
 
     // ── UI ────────────────────────────────────────────────────────────────────
     const [loading, setLoading]         = useState(false);
@@ -50,7 +59,7 @@ export default function RetirarDinero() {
     const montoNum = parseFloat(monto) || 0;
 
     // ─────────────────────────────────────────────────────────────────────────
-    // FASE 0 → FASE 1: pedir opciones de moneda
+    // FASE 0 → FASE 1
     // ─────────────────────────────────────────────────────────────────────────
     const handleBuscarOpciones = async () => {
         setError("");
@@ -64,12 +73,10 @@ export default function RetirarDinero() {
                 tipo_tasa: tipoTasa,
                 metodo,
             });
-            // 202 → opciones
             if (resp.requiere_seleccion_moneda) {
                 setOpciones(resp.opciones_disponibles || []);
                 setFase(1);
             } else if (resp.transaccionId) {
-                // Retiro directo sin necesidad de elegir moneda (raro pero posible)
                 setResultado(resp);
                 setFase(3);
             }
@@ -81,7 +88,7 @@ export default function RetirarDinero() {
     };
 
     // ─────────────────────────────────────────────────────────────────────────
-    // FASE 1 → FASE 2/3: elegir moneda y ejecutar
+    // FASE 1 → FASE 2 / 3
     // ─────────────────────────────────────────────────────────────────────────
     const handleElegirMoneda = async (codigoMoneda) => {
         setMonedaSal(codigoMoneda);
@@ -114,7 +121,7 @@ export default function RetirarDinero() {
     };
 
     // ─────────────────────────────────────────────────────────────────────────
-    // FASE 2 → FASE 3: confirmar conversión desde BOB
+    // FASE 2 → FASE 3
     // ─────────────────────────────────────────────────────────────────────────
     const handleConfirmarConversion = async () => {
         setError("");
@@ -135,7 +142,7 @@ export default function RetirarDinero() {
                 setResultado(resp);
                 setFase(3);
             } else {
-                setError(resp.error || "No se pudo completar el retiro.");
+                setError(resp.error || t("ret.error_retiro"));
             }
         } catch (e) {
             setError(e.message);
@@ -153,14 +160,11 @@ export default function RetirarDinero() {
 
     const fase0Valida = tarjeta && pin.length >= 4 && montoNum > 0;
 
-   
     return (
         <div className="contenedor">
             <ImportarNav />
 
             <div className="dep-container">
-
-                
 
                 {/* ── Stepper ──────────────────────────────────────────── */}
                 {fase < 3 && (
@@ -177,14 +181,13 @@ export default function RetirarDinero() {
                     </div>
                 )}
 
-                {/* ═════════════════════════════════════════════════════════
+                {/* ═══════════════════════════════════════════════════════
                     FASE 0 — Credenciales + monto
-                ══════════════════════════════════════════════════════════ */}
+                ════════════════════════════════════════════════════════ */}
                 {fase === 0 && (
                     <div className="dep-card dep-fade">
-                        <h2 className="dep-card-title">¿Cuánto quieres retirar?</h2>
+                        <h2 className="dep-card-title">{t("ret.f0_titulo")}</h2>
 
-                        {/* Monto */}
                         <div className="dep-monto-wrap">
                             <div className="dep-monto-input-row">
                                 <span className="dep-simbolo">{getMeta(moneda).simbolo}</span>
@@ -211,30 +214,29 @@ export default function RetirarDinero() {
                             </div>
                         </div>
 
-                        {/* Opciones de tasa y método */}
                         <div className="dep-tasa-row">
                             <div className="dep-radio-group">
-                                {['oficial', 'binance'].map((t) => (
+                                {["oficial", "binance"].map((tasa) => (
                                     <label
-                                        key={t}
-                                        className={`dep-radio ${tipoTasa === t ? 'dep-radio--sel' : ''}`}
+                                        key={tasa}
+                                        className={`dep-radio ${tipoTasa === tasa ? "dep-radio--sel" : ""}`}
                                     >
                                         <input
                                             type="radio"
                                             name="tasa"
-                                            value={t}
-                                            checked={tipoTasa === t}
-                                            onChange={() => setTipoTasa(t)}
+                                            value={tasa}
+                                            checked={tipoTasa === tasa}
+                                            onChange={() => setTipoTasa(tasa)}
                                         />
-                                        {t.charAt(0).toUpperCase() + t.slice(1)}
+                                        {tasa.charAt(0).toUpperCase() + tasa.slice(1)}
                                     </label>
                                 ))}
                             </div>
                             <div className="dep-radio-group">
-                                {['ATM', 'ventanilla'].map((m) => (
+                                {["ATM", "ventanilla"].map((m) => (
                                     <label
                                         key={m}
-                                        className={`dep-radio ${metodo === m ? 'dep-radio--sel' : ''}`}
+                                        className={`dep-radio ${metodo === m ? "dep-radio--sel" : ""}`}
                                     >
                                         <input
                                             type="radio"
@@ -251,11 +253,10 @@ export default function RetirarDinero() {
 
                         <div className="dep-divider" />
 
-                        {/* Credenciales */}
-                        <h3 className="dep-card-sub">Autenticación</h3>
+                        <h3 className="dep-card-sub">{t("ret.autenticacion")}</h3>
                         <div className="dep-form-grid">
                             <div className="dep-field">
-                                <label className="dep-label">Número de tarjeta</label>
+                                <label className="dep-label">{t("ret.num_tarjeta")}</label>
                                 <input
                                     className="dep-input"
                                     type="text"
@@ -265,7 +266,7 @@ export default function RetirarDinero() {
                                 />
                             </div>
                             <div className="dep-field">
-                                <label className="dep-label">PIN</label>
+                                <label className="dep-label">{t("ret.pin")}</label>
                                 <input
                                     className="dep-input dep-input--pin"
                                     type="password"
@@ -284,19 +285,19 @@ export default function RetirarDinero() {
                             onClick={handleBuscarOpciones}
                             disabled={!fase0Valida || loading}
                         >
-                            {loading ? <span className="dep-spinner" /> : "Ver opciones →"}
+                            {loading ? <span className="dep-spinner" /> : t("ret.ver_opciones")}
                         </button>
                     </div>
                 )}
 
-                {/* ═════════════════════════════════════════════════════════
+                {/* ═══════════════════════════════════════════════════════
                     FASE 1 — Selección de moneda de salida
-                ══════════════════════════════════════════════════════════ */}
+                ════════════════════════════════════════════════════════ */}
                 {fase === 1 && (
                     <div className="dep-card dep-fade">
-                        <h2 className="dep-card-title">¿En qué moneda retiras?</h2>
+                        <h2 className="dep-card-title">{t("ret.f1_titulo")}</h2>
                         <p className="dep-card-sub">
-                            Retiro de <strong>{montoNum} {moneda}</strong> — elige cómo quieres recibir el efectivo
+                            {t("ret.f1_sub_inicio")} <strong>{montoNum} {moneda}</strong> — {t("ret.f1_sub_fin")}
                         </p>
 
                         {error && <div className="dep-error">{error}</div>}
@@ -310,22 +311,22 @@ export default function RetirarDinero() {
                                         className={`dep-opcion ${!op.suficiente ? "dep-opcion--insuf" : ""}`}
                                         onClick={() => !loading && op.suficiente && handleElegirMoneda(op.moneda)}
                                         disabled={loading || !op.suficiente}
-                                        title={!op.suficiente ? "Saldo insuficiente en esta moneda" : ""}
+                                        title={!op.suficiente ? t("ret.saldo_insuf_title") : ""}
                                     >
                                         <span className="dep-op-bandera">{meta.bandera}</span>
                                         <span className="dep-op-codigo">{op.moneda}</span>
                                         <span className="dep-op-nombre">{meta.nombre}</span>
                                         <span className="dep-op-recibe">
-                                            Recibes: <strong>{meta.simbolo} {Number(op.monto_a_recibir).toFixed(4)}</strong>
+                                            {t("ret.recibes")}: <strong>{meta.simbolo} {Number(op.monto_a_recibir).toFixed(4)}</strong>
                                         </span>
                                         <span className="dep-op-saldo">
-                                            Disponible: {meta.simbolo} {Number(op.saldo_disponible).toFixed(2)}
+                                            {t("ret.disponible")}: {meta.simbolo} {Number(op.saldo_disponible).toFixed(2)}
                                         </span>
                                         {op.tasa_aplicada !== 1 && (
-                                            <span className="dep-op-tasa">Tasa: {op.tasa_aplicada}</span>
+                                            <span className="dep-op-tasa">{t("dep.tasa_label")}: {op.tasa_aplicada}</span>
                                         )}
                                         {!op.suficiente && (
-                                            <span className="dep-op-insuf-badge">Sin saldo</span>
+                                            <span className="dep-op-insuf-badge">{t("ret.sin_saldo")}</span>
                                         )}
                                         {loading && monedaSalida === op.moneda && (
                                             <span className="dep-spinner dep-spinner--sm" />
@@ -336,29 +337,29 @@ export default function RetirarDinero() {
                         </div>
 
                         <button className="dep-btn-back" onClick={() => { setFase(0); setError(""); }}>
-                            ← Cambiar monto
+                            {t("ret.cambiar_monto")}
                         </button>
                     </div>
                 )}
 
-                {/* ═════════════════════════════════════════════════════════
+                {/* ═══════════════════════════════════════════════════════
                     FASE 2 — Confirmar conversión desde BOB
-                ══════════════════════════════════════════════════════════ */}
+                ════════════════════════════════════════════════════════ */}
                 {fase === 2 && detalleConv && (
                     <div className="dep-card dep-fade dep-card--success">
                         <div className="dep-success-icon">⚠️</div>
-                        <h2 className="dep-card-title">Confirmar conversión</h2>
+                        <h2 className="dep-card-title">{t("ret.f2_titulo")}</h2>
                         <p className="dep-card-sub">
-                            No tienes saldo en <strong>{monedaSalida}</strong>. Se convertirá desde tu saldo en BOB.
+                            {t("ret.f2_sub_ini")} <strong>{monedaSalida}</strong>. {t("ret.f2_sub_fin")}
                         </p>
 
                         <div className="dep-conv-tabla">
-                            <FilaConv label="Retiras"          valor={detalleConv.montoASalida} />
-                            <FilaConv label="BOB a descontar"  valor={detalleConv.bobNecesarios} destacado />
-                            <FilaConv label="Saldo BOB actual" valor={detalleConv.saldoBOBDisponible} />
+                            <FilaConv label={t("ret.conv_retiras")}    valor={detalleConv.montoASalida} />
+                            <FilaConv label={t("ret.conv_bob")}        valor={detalleConv.bobNecesarios} destacado />
+                            <FilaConv label={t("ret.conv_saldo_bob")}  valor={detalleConv.saldoBOBDisponible} />
                             {detalleConv.tasa && (
                                 <FilaConv
-                                    label={`Tasa ${detalleConv.tasa.tipo}`}
+                                    label={`${t("dep.tasa_label")} ${detalleConv.tasa.tipo}`}
                                     valor={`1 ${monedaSalida} = Bs ${detalleConv.tasa.valor}`}
                                 />
                             )}
@@ -368,52 +369,50 @@ export default function RetirarDinero() {
 
                         <div className="dep-btn-row">
                             <button className="dep-btn-back" onClick={() => { setFase(1); setError(""); }}>
-                                ← Cambiar moneda
+                                {t("ret.cambiar_moneda")}
                             </button>
                             <button
                                 className="dep-btn-confirm"
                                 onClick={handleConfirmarConversion}
                                 disabled={loading}
                             >
-                                {loading ? <span className="dep-spinner" /> : "✓ Confirmar retiro"}
+                                {loading ? <span className="dep-spinner" /> : t("ret.confirmar_retiro")}
                             </button>
                         </div>
                     </div>
                 )}
 
-                {/* ═════════════════════════════════════════════════════════
+                {/* ═══════════════════════════════════════════════════════
                     FASE 3 — Éxito
-                ══════════════════════════════════════════════════════════ */}
+                ════════════════════════════════════════════════════════ */}
                 {fase === 3 && resultado && (
                     <div className="dep-card dep-card--success dep-fade">
-                        
-                        <h2 className="dep-card-title">¡Retiro exitoso!    <IconThumbUpFilled/></h2>
+                        <h2 className="dep-card-title">{t("ret.exito_titulo")} <IconThumbUpFilled /></h2>
                         <p className="dep-success-msg">{resultado.mensaje}</p>
 
                         <div className="dep-resumen dep-resumen--success">
-                            
                             {resultado.detalle?.montoSolicitado && (
-                                <FilaResult label="Solicitado"   valor={resultado.detalle.montoSolicitado} />
+                                <FilaResult label={t("ret.res_solicitado")}   valor={resultado.detalle.montoSolicitado} />
                             )}
                             {resultado.detalle?.montoRetirado && (
-                                <FilaResult label="Entregado"    valor={resultado.detalle.montoRetirado} />
+                                <FilaResult label={t("ret.res_entregado")}    valor={resultado.detalle.montoRetirado} />
                             )}
                             {resultado.detalle?.bobDescontados && (
-                                <FilaResult label="BOB descontados" valor={resultado.detalle.bobDescontados} />
+                                <FilaResult label={t("ret.res_bob_desc")}     valor={resultado.detalle.bobDescontados} />
                             )}
                             {resultado.detalle?.equivalenteBOB && (
-                                <FilaResult label="Equiv. BOB"   valor={resultado.detalle.equivalenteBOB} />
+                                <FilaResult label={t("ret.res_equiv_bob")}    valor={resultado.detalle.equivalenteBOB} />
                             )}
                             {resultado.detalle?.tasa && (
                                 <FilaResult
-                                    label="Tasa aplicada"
+                                    label={t("ret.res_tasa")}
                                     valor={`${resultado.detalle.tasa.valor} (${resultado.detalle.tasa.tipo})`}
                                 />
                             )}
                         </div>
 
                         <button className="dep-btn-next" onClick={reiniciar}>
-                            Hacer otro retiro
+                            {t("ret.otro_retiro")}
                         </button>
                     </div>
                 )}

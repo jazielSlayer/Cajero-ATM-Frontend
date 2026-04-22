@@ -1,46 +1,55 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import "../../Css/Depositar.css";
 import ImportarNav from "../../Importar nav/importar-nav";
 import { realizarDeposito, consultarTasas } from "../../Api/Api_cliente/Hacer_Transaccion";
 import { getDatosUsuario } from "../../Api/Api_cliente/Datos_cliente";
 import { IconExchange, IconReportMoneyFilled, IconThumbUpFilled } from "@tabler/icons-react";
 
-
-const MONEDAS = [
-    { codigo: "BOB", nombre: "Boliviano",      simbolo: "Bs",  bandera: "🇧🇴" },
-    { codigo: "USD", nombre: "Dólar",           simbolo: "$",   bandera: "🇺🇸" },
-    { codigo: "EUR", nombre: "Euro",            simbolo: "€",   bandera: "🇪🇺" },
-    { codigo: "BRL", nombre: "Real brasileño",  simbolo: "R$",  bandera: "🇧🇷" },
-    { codigo: "ARS", nombre: "Peso argentino",  simbolo: "$",   bandera: "🇦🇷" },
-    { codigo: "CLP", nombre: "Peso chileno",    simbolo: "$",   bandera: "🇨🇱" },
-    { codigo: "PEN", nombre: "Sol peruano",     simbolo: "S/",  bandera: "🇵🇪" },
-    { codigo: "COP", nombre: "Peso colombiano", simbolo: "$",   bandera: "🇨🇴" },
+// Las listas que contienen texto traducible se generan como funciones
+// para que reaccionen al cambio de idioma en tiempo de ejecución.
+const getMonedas = (t) => [
+    { codigo: "BOB", nombre: t("dep.mon_BOB"), simbolo: "Bs",  bandera: "🇧🇴" },
+    { codigo: "USD", nombre: t("dep.mon_USD"), simbolo: "$",   bandera: "🇺🇸" },
+    { codigo: "EUR", nombre: t("dep.mon_EUR"), simbolo: "€",   bandera: "🇪🇺" },
+    { codigo: "BRL", nombre: t("dep.mon_BRL"), simbolo: "R$",  bandera: "🇧🇷" },
+    { codigo: "ARS", nombre: t("dep.mon_ARS"), simbolo: "$",   bandera: "🇦🇷" },
+    { codigo: "CLP", nombre: t("dep.mon_CLP"), simbolo: "$",   bandera: "🇨🇱" },
+    { codigo: "PEN", nombre: t("dep.mon_PEN"), simbolo: "S/",  bandera: "🇵🇪" },
+    { codigo: "COP", nombre: t("dep.mon_COP"), simbolo: "$",   bandera: "🇨🇴" },
 ];
 
-function getMoneda(codigo) {
-    return MONEDAS.find((m) => m.codigo === codigo) || MONEDAS[0];
-}
-
-
-const TIPOS_DEPOSITO = [
+const getTiposDeposito = (t) => [
     {
         id: "directo",
-        label: "Depósito Directo",
-        desc: "Acredita en la misma moneda que entregas",
-        icon: <IconReportMoneyFilled />
+        label: t("dep.tipo_directo"),
+        desc:  t("dep.tipo_directo_desc"),
+        icon:  <IconReportMoneyFilled />,
     },
     {
         id: "conversion",
-        label: "Depósito con Conversión",
-        desc: "Convierte a otra moneda al acreditar",
-        icon: <IconExchange />
+        label: t("dep.tipo_conversion"),
+        desc:  t("dep.tipo_conversion_desc"),
+        icon:  <IconExchange />,
     },
 ];
 
-
-const PASOS = ["Tipo", "Monedas", "Monto", "Seguridad", "Confirmar"];
-
 export default function DepositarDinero() {
+    const { t } = useTranslation();
+
+    // Las listas se calculan en cada render para reflejar el idioma activo
+    const MONEDAS        = getMonedas(t);
+    const TIPOS_DEPOSITO = getTiposDeposito(t);
+    const PASOS          = [
+        t("dep.paso_tipo"),
+        t("dep.paso_monedas"),
+        t("dep.paso_monto"),
+        t("dep.paso_seguridad"),
+        t("dep.paso_confirmar"),
+    ];
+
+    const getMoneda = (codigo) => MONEDAS.find((m) => m.codigo === codigo) || MONEDAS[0];
+
     const [paso, setPaso]           = useState(0);
     const [tipoDeposito, setTipo]   = useState("directo");
     const [monedaOrigen, setOrigen] = useState("BOB");
@@ -56,16 +65,15 @@ export default function DepositarDinero() {
     const [resultado, setResultado] = useState(null);
     const [error, setError]         = useState("");
 
-
-    const [correo, setCorreo]     = useState("");
-    const [tarjeta, setTarjeta]   = useState("");
+    const [correo, setCorreo]               = useState("");
+    const [tarjeta, setTarjeta]             = useState("");
     const [loadingSesion, setLoadingSesion] = useState(true);
     const [errorSesion, setErrorSesion]     = useState("");
 
     useEffect(() => {
         const sesion = sessionStorage.getItem("usuario_atm");
         if (!sesion) {
-            setErrorSesion("No se encontró sesión activa.");
+            setErrorSesion(t("dep.sin_sesion"));
             setLoadingSesion(false);
             return;
         }
@@ -75,11 +83,10 @@ export default function DepositarDinero() {
                 setCorreo(data.usuario.correo);
                 setTarjeta(data.usuario.tarjeta.numero_tarjeta);
             })
-            .catch(() => setErrorSesion("Error al cargar datos de sesión."))
+            .catch(() => setErrorSesion(t("dep.error_sesion")))
             .finally(() => setLoadingSesion(false));
-    }, []);
+    }, [t]);
 
-    // Cargar tasas al montar
     useEffect(() => {
         setLoadT(true);
         consultarTasas()
@@ -88,23 +95,22 @@ export default function DepositarDinero() {
             .finally(() => setLoadT(false));
     }, []);
 
-    // Si depósito directo, destino = origen
     useEffect(() => {
         if (tipoDeposito === "directo") setDest(monedaOrigen);
     }, [tipoDeposito, monedaOrigen]);
 
     const tasaRef = tasas.find(
-        (t) =>
-            t.Moneda_origen  === monedaOrigen &&
-            t.Moneda_destino === "BOB" &&
-            t.Tipo_tasa      === tipoTasa
+        (tx) =>
+            tx.Moneda_origen  === monedaOrigen &&
+            tx.Moneda_destino === "BOB" &&
+            tx.Tipo_tasa      === tipoTasa
     );
 
     const tasaDestRef = tasas.find(
-        (t) =>
-            t.Moneda_origen  === monedaDest &&
-            t.Moneda_destino === "BOB" &&
-            t.Tipo_tasa      === tipoTasa
+        (tx) =>
+            tx.Moneda_origen  === monedaDest &&
+            tx.Moneda_destino === "BOB" &&
+            tx.Tipo_tasa      === tipoTasa
     );
 
     const montoNum        = parseFloat(monto) || 0;
@@ -116,14 +122,13 @@ export default function DepositarDinero() {
             ? montoBOB
             : montoBOB / (tasaDestRef?.Tasa || 1);
 
-
     const handleSubmit = async () => {
         setError("");
         setLoading(true);
         try {
             const resp = await realizarDeposito({
-                correo,                      
-                numero_tarjeta: tarjeta,     
+                correo,
+                numero_tarjeta: tarjeta,
                 contrasena,
                 pin,
                 monto:          montoNum,
@@ -153,7 +158,7 @@ export default function DepositarDinero() {
             <div className="contenedor">
                 <ImportarNav />
                 <div className="dep-container">
-                    <p className="loading">Cargando datos de sesión…</p>
+                    <p className="loading">{t("dep.cargando_sesion")}</p>
                 </div>
             </div>
         );
@@ -176,9 +181,7 @@ export default function DepositarDinero() {
 
             <div className="dep-container">
 
-                
-
-                
+                {/* ── Stepper ─────────────────────────────────────────────── */}
                 {paso < 5 && (
                     <div className="dep-stepper">
                         {PASOS.map((s, i) => (
@@ -193,37 +196,37 @@ export default function DepositarDinero() {
                     </div>
                 )}
 
-                
+                {/* ── Paso 0: Tipo de depósito ────────────────────────────── */}
                 {paso === 0 && (
                     <div className="dep-card dep-fade">
-                        <h2 className="dep-card-title">¿Qué tipo de depósito deseas realizar?</h2>
+                        <h2 className="dep-card-title">{t("dep.p0_titulo")}</h2>
                         <div className="dep-tipo-grid">
-                            {TIPOS_DEPOSITO.map((t) => (
+                            {TIPOS_DEPOSITO.map((tp) => (
                                 <button
-                                    key={t.id}
-                                    className={`dep-tipo-btn ${tipoDeposito === t.id ? "dep-tipo-btn--sel" : ""}`}
-                                    onClick={() => setTipo(t.id)}
+                                    key={tp.id}
+                                    className={`dep-tipo-btn ${tipoDeposito === tp.id ? "dep-tipo-btn--sel" : ""}`}
+                                    onClick={() => setTipo(tp.id)}
                                 >
-                                    <span className="dep-tipo-icon">{t.icon}</span>
-                                    <span className="dep-tipo-label">{t.label}</span>
-                                    <span className="dep-tipo-desc">{t.desc}</span>
+                                    <span className="dep-tipo-icon">{tp.icon}</span>
+                                    <span className="dep-tipo-label">{tp.label}</span>
+                                    <span className="dep-tipo-desc">{tp.desc}</span>
                                 </button>
                             ))}
                         </div>
                         <button className="dep-btn-next" onClick={() => setPaso(1)}>
-                            Continuar →
+                            {t("dep.continuar")}
                         </button>
                     </div>
                 )}
 
-                
+                {/* ── Paso 1: Monedas y monto ─────────────────────────────── */}
                 {paso === 1 && (
                     <div className="dep-card dep-fade">
-                        <h2 className="dep-card-title">Moneda y monto</h2>
+                        <h2 className="dep-card-title">{t("dep.p1_titulo")}</h2>
 
                         <div className="dep-moneda-row">
                             <div className="dep-moneda-col">
-                                <label className="dep-label">Moneda que entregas</label>
+                                <label className="dep-label">{t("dep.moneda_entrega")}</label>
                                 <div className="dep-select-wrap">
                                     <select
                                         className="dep-select"
@@ -243,7 +246,7 @@ export default function DepositarDinero() {
                                 <>
                                     <div className="dep-arrow">→</div>
                                     <div className="dep-moneda-col">
-                                        <label className="dep-label">Moneda a acreditar</label>
+                                        <label className="dep-label">{t("dep.moneda_acreditar")}</label>
                                         <div className="dep-select-wrap">
                                             <select
                                                 className="dep-select"
@@ -264,18 +267,18 @@ export default function DepositarDinero() {
 
                         {tipoDeposito === "conversion" && (monedaOrigen !== "BOB" || monedaDest !== "BOB") && (
                             <div className="dep-tasa-row">
-                                <span className="dep-label">Tipo de tasa</span>
+                                <span className="dep-label">{t("dep.tipo_tasa")}</span>
                                 <div className="dep-radio-group">
-                                    {["oficial", "binance"].map((t) => (
-                                        <label key={t} className={`dep-radio ${tipoTasa === t ? "dep-radio--sel" : ""}`}>
+                                    {["oficial", "binance"].map((tasa) => (
+                                        <label key={tasa} className={`dep-radio ${tipoTasa === tasa ? "dep-radio--sel" : ""}`}>
                                             <input
                                                 type="radio"
                                                 name="tasa"
-                                                value={t}
-                                                checked={tipoTasa === t}
-                                                onChange={() => setTipoTasa(t)}
+                                                value={tasa}
+                                                checked={tipoTasa === tasa}
+                                                onChange={() => setTipoTasa(tasa)}
                                             />
-                                            {t.charAt(0).toUpperCase() + t.slice(1)}
+                                            {tasa.charAt(0).toUpperCase() + tasa.slice(1)}
                                         </label>
                                     ))}
                                 </div>
@@ -283,7 +286,7 @@ export default function DepositarDinero() {
                         )}
 
                         <div className="dep-tasa-row">
-                            <span className="dep-label">Método de depósito</span>
+                            <span className="dep-label">{t("dep.metodo_deposito")}</span>
                             <div className="dep-radio-group">
                                 {["ATM", "ventanilla", "transferencia"].map((m) => (
                                     <label key={m} className={`dep-radio ${metodo === m ? "dep-radio--sel" : ""}`}>
@@ -301,7 +304,7 @@ export default function DepositarDinero() {
                         </div>
 
                         <div className="dep-monto-wrap">
-                            <label className="dep-label">Monto a depositar</label>
+                            <label className="dep-label">{t("dep.monto_label")}</label>
                             <div className="dep-monto-input-row">
                                 <span className="dep-simbolo">{getMoneda(monedaOrigen).simbolo}</span>
                                 <input
@@ -321,24 +324,24 @@ export default function DepositarDinero() {
                             <div className="dep-preview">
                                 {tipoDeposito === "directo" ? (
                                     <p>
-                                        Recibirás{" "}
+                                        {t("dep.preview_recibiras")}{" "}
                                         <strong>
                                             {getMoneda(monedaOrigen).simbolo} {montoNum.toFixed(2)} {monedaOrigen}
                                         </strong>{" "}
-                                        en tu cuenta.
+                                        {t("dep.preview_en_cuenta")}
                                     </p>
                                 ) : (
                                     <>
                                         {loadingTasas ? (
-                                            <p className="dep-preview-loading">Cargando tasas…</p>
+                                            <p className="dep-preview-loading">{t("dep.cargando_tasas")}</p>
                                         ) : (
                                             <>
                                                 <div className="dep-preview-row">
-                                                    <span>Equivalente en BOB</span>
+                                                    <span>{t("dep.equiv_bob")}</span>
                                                     <strong>Bs {montoBOB.toFixed(2)}</strong>
                                                 </div>
                                                 <div className="dep-preview-row">
-                                                    <span>Recibirás en {monedaDest}</span>
+                                                    <span>{t("dep.recibiras_en")} {monedaDest}</span>
                                                     <strong>
                                                         {getMoneda(monedaDest).simbolo}{" "}
                                                         {montoAcreditado.toFixed(6)} {monedaDest}
@@ -346,7 +349,7 @@ export default function DepositarDinero() {
                                                 </div>
                                                 {tasaRef && (
                                                     <div className="dep-preview-tasa">
-                                                        Tasa {tipoTasa}: 1 {monedaOrigen} = Bs {tasaRef.Tasa}
+                                                        {t("dep.tasa_label")} {tipoTasa}: 1 {monedaOrigen} = Bs {tasaRef.Tasa}
                                                     </div>
                                                 )}
                                             </>
@@ -357,39 +360,38 @@ export default function DepositarDinero() {
                         )}
 
                         <div className="dep-btn-row">
-                            <button className="dep-btn-back" onClick={() => setPaso(0)}>← Atrás</button>
+                            <button className="dep-btn-back" onClick={() => setPaso(0)}>{t("dep.atras")}</button>
                             <button
                                 className="dep-btn-next"
                                 onClick={() => setPaso(2)}
                                 disabled={!monto || montoNum <= 0}
                             >
-                                Continuar →
+                                {t("dep.continuar")}
                             </button>
                         </div>
                     </div>
                 )}
 
-                
+                {/* ── Paso 2: Seguridad ───────────────────────────────────── */}
                 {paso === 2 && (
                     <div className="dep-card dep-fade">
-                        <h2 className="dep-card-title">Verificación de seguridad</h2>
-                        <p className="dep-card-sub">Ingresa tu contraseña y PIN para confirmar</p>
+                        <h2 className="dep-card-title">{t("dep.p2_titulo")}</h2>
+                        <p className="dep-card-sub">{t("dep.p2_sub")}</p>
 
-                        {/* Datos de sesión (solo lectura, informativo) */}
                         <div className="dep-sesion-info">
                             <div className="dep-sesion-fila">
-                                <span className="dep-label">Cuenta</span>
+                                <span className="dep-label">{t("dep.cuenta_label")}</span>
                                 <span className="dep-sesion-valor">{correo}</span>
                             </div>
                             <div className="dep-sesion-fila">
-                                <span className="dep-label">Tarjeta</span>
+                                <span className="dep-label">{t("dep.tarjeta_label")}</span>
                                 <span className="dep-sesion-valor">••••{tarjeta.slice(-4)}</span>
                             </div>
                         </div>
 
                         <div className="dep-form-grid">
                             <div className="dep-field">
-                                <label className="dep-label">Contraseña</label>
+                                <label className="dep-label">{t("dep.contrasena")}</label>
                                 <input
                                     className="dep-input"
                                     type="password"
@@ -399,7 +401,7 @@ export default function DepositarDinero() {
                                 />
                             </div>
                             <div className="dep-field">
-                                <label className="dep-label">PIN de tarjeta</label>
+                                <label className="dep-label">{t("dep.pin")}</label>
                                 <input
                                     className="dep-input dep-input--pin"
                                     type="password"
@@ -412,77 +414,78 @@ export default function DepositarDinero() {
                         </div>
 
                         <div className="dep-btn-row">
-                            <button className="dep-btn-back" onClick={() => setPaso(1)}>← Atrás</button>
+                            <button className="dep-btn-back" onClick={() => setPaso(1)}>{t("dep.atras")}</button>
                             <button
                                 className="dep-btn-next"
                                 onClick={() => setPaso(3)}
                                 disabled={!contrasena || pin.length < 4}
                             >
-                                Continuar →
+                                {t("dep.continuar")}
                             </button>
                         </div>
                     </div>
                 )}
 
-                
+                {/* ── Paso 3: Resumen ─────────────────────────────────────── */}
                 {paso === 3 && (
                     <div className="dep-card dep-fade">
-                        <h2 className="dep-card-title">Resumen del depósito</h2>
+                        <h2 className="dep-card-title">{t("dep.p3_titulo")}</h2>
 
                         <div className="dep-resumen">
-                            <ResumenFila label="Tipo"           valor={tipoDeposito === "directo" ? "Depósito directo" : "Con conversión"} />
-                            <ResumenFila label="Entregas"       valor={`${getMoneda(monedaOrigen).simbolo} ${montoNum.toFixed(2)} ${monedaOrigen}`} />
-                            <ResumenFila label="Se acredita"    valor={`${getMoneda(monedaDest).simbolo} ${montoAcreditado.toFixed(tipoDeposito === "directo" ? 2 : 6)} ${monedaDest}`} />
+                            <ResumenFila
+                                label={t("dep.res_tipo")}
+                                valor={tipoDeposito === "directo" ? t("dep.tipo_directo") : t("dep.tipo_conversion")}
+                            />
+                            <ResumenFila label={t("dep.res_entregas")}    valor={`${getMoneda(monedaOrigen).simbolo} ${montoNum.toFixed(2)} ${monedaOrigen}`} />
+                            <ResumenFila label={t("dep.res_acredita")}    valor={`${getMoneda(monedaDest).simbolo} ${montoAcreditado.toFixed(tipoDeposito === "directo" ? 2 : 6)} ${monedaDest}`} />
                             {tipoDeposito === "conversion" && montoBOB > 0 && (
-                                <ResumenFila label="Equivalente BOB" valor={`Bs ${montoBOB.toFixed(2)}`} />
+                                <ResumenFila label={t("dep.equiv_bob")}   valor={`Bs ${montoBOB.toFixed(2)}`} />
                             )}
                             {tipoDeposito === "conversion" && tasaRef && (
-                                <ResumenFila label={`Tasa ${tipoTasa}`} valor={`1 ${monedaOrigen} = Bs ${tasaRef.Tasa}`} />
+                                <ResumenFila label={`${t("dep.tasa_label")} ${tipoTasa}`} valor={`1 ${monedaOrigen} = Bs ${tasaRef.Tasa}`} />
                             )}
-                            <ResumenFila label="Método"         valor={metodo} />
-                            <ResumenFila label="Correo"         valor={correo} />
-                            <ResumenFila label="Tarjeta"        valor={`••••${tarjeta.slice(-4)}`} />
+                            <ResumenFila label={t("dep.res_metodo")}      valor={metodo} />
+                            <ResumenFila label={t("dep.res_correo")}      valor={correo} />
+                            <ResumenFila label={t("dep.tarjeta_label")}   valor={`••••${tarjeta.slice(-4)}`} />
                         </div>
 
                         {error && <div className="dep-error">{error}</div>}
 
                         <div className="dep-btn-row">
-                            <button className="dep-btn-back" onClick={() => setPaso(2)}>← Atrás</button>
+                            <button className="dep-btn-back" onClick={() => setPaso(2)}>{t("dep.atras")}</button>
                             <button
                                 className="dep-btn-confirm"
                                 onClick={handleSubmit}
                                 disabled={loading}
                             >
-                                {loading ? "Procesando…" : "✓ Confirmar depósito"}
+                                {loading ? t("dep.procesando") : t("dep.confirmar")}
                             </button>
                         </div>
                     </div>
                 )}
 
-               
+                {/* ── Paso 5: Éxito ───────────────────────────────────────── */}
                 {paso === 5 && resultado && (
                     <div className="dep-card dep-card--success dep-fade">
-                        
-                        <h2 className="dep-card-title">¡Depósito exitoso!   <IconThumbUpFilled/></h2>
+                        <h2 className="dep-card-title">{t("dep.exito_titulo")} <IconThumbUpFilled /></h2>
                         <p className="dep-success-msg">{resultado.mensaje}</p>
 
                         <div className="dep-resumen dep-resumen--success">
-                            
-                            <ResumenFila label="Monto recibido"   valor={resultado.detalle?.montoRecibido} />
-                            <ResumenFila label="Monto acreditado" valor={resultado.detalle?.montoAcreditado} />
+                            <ResumenFila label={t("dep.exito_recibido")}   valor={resultado.detalle?.montoRecibido} />
+                            <ResumenFila label={t("dep.exito_acreditado")} valor={resultado.detalle?.montoAcreditado} />
                             {resultado.detalle?.equivalenteBOB && (
-                                <ResumenFila label="Equivalente BOB" valor={resultado.detalle.equivalenteBOB} />
+                                <ResumenFila label={t("dep.equiv_bob")}    valor={resultado.detalle.equivalenteBOB} />
                             )}
                             {resultado.detalle?.tasa && (
                                 <ResumenFila
-                                    label="Tasa aplicada"
+                                    label={t("dep.exito_tasa")}
                                     valor={`${resultado.detalle.tasa.origen_a_BOB} (${resultado.detalle.tasa.tipo})`}
                                 />
                             )}
                         </div>
 
                         <button className="dep-btn-next" onClick={reiniciar}>
-                            Hacer otro depósito
+                            {t("dep.otro_deposito")}
                         </button>
                     </div>
                 )}

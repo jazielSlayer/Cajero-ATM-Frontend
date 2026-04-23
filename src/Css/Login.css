@@ -5,11 +5,12 @@
 .formulario {
     position: absolute;
     top: 50%;
-    left:50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
     background: rgb(0, 0, 0);
     border-radius: 10px;
+    overflow: hidden; /* para que el header quede pegado al borde */
 }
 
 .TituloLogin {
@@ -114,4 +115,70 @@ input[type="submit"]:hover {
 
 .registrarse .a:hover{
     text-decoration: underline;
+}
+
+.formulario h1 {
+    text-align: center;
+    padding: 0;
+    border-bottom: none; /* el borde lo da .login-header ahora */
+}
+
+.lang-selector {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.lang-btn .lang-flag {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.lang-btn:hover {
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.lang-btn--active {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+.login-header {
+    padding: 28px 40px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.TituloLogin {
+    color: rgb(199, 197, 197);
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 22px;
 }

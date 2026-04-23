@@ -103,6 +103,69 @@
     animation: regFade .35s ease;
 }
 
+.reg-topbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: .75rem 0 1.25rem;
+    border-bottom: 1px solid var(--reg-border);
+    margin-bottom: 1.75rem;
+    gap: 10px;
+}
+
+.reg-globe-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #2a2a2a;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.reg-globe-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: #666;
+    fill: none;
+    stroke-width: 1.5;
+}
+
+.lang-selector {
+    display: flex;
+    gap: 3px;
+    background: #111111;
+    border: 1px solid var(--reg-border);
+    border-radius: 999px;
+    padding: 3px;
+}
+
+.lang-btn {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.38);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    cursor: pointer;
+    transition: background .18s, color .18s;
+    font-family: "DM Sans", sans-serif;
+}
+
+.lang-btn:hover {
+    color: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.lang-btn--active {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
 @keyframes regFade {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }

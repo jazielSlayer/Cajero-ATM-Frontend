@@ -1,6 +1,4 @@
-// ── Actividad.jsx ─────────────────────────────────────────────────────────────
-// Todos los textos estáticos ahora usan t() de i18next.
-// ─────────────────────────────────────────────────────────────────────────────
+
 import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {

@@ -142,6 +142,9 @@
 .ret-fade {
     animation: retFade .35s ease;
 }
+.dep-resumen {
+    color: white;
+}
 
 @keyframes retFade {
     from { opacity: 0; transform: translateY(14px); }

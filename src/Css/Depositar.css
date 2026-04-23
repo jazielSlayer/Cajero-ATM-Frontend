@@ -311,6 +311,9 @@
     margin-bottom: .4rem;
     color: var(--dep-text);
 }
+.dep-sesion-valor {
+    color: var(--dep-primary);
+}
 
 .dep-preview-loading { color: var(--dep-muted); font-style: italic; }
 

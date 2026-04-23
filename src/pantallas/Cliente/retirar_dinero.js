@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import "../../Css/Depositar.css";
+import "../../Css/Retirar.css";
 import ImportarNav from "../../Importar nav/importar-nav";
 import { iniciarRetiro, ejecutarRetiro } from "../../Api/Api_cliente/Hacer_Transaccion";
 import { IconThumbUpFilled } from "@tabler/icons-react";
@@ -388,7 +388,7 @@ export default function RetirarDinero() {
                 {fase === 3 && resultado && (
                     <div className="dep-card dep-card--success dep-fade">
                         <h2 className="dep-card-title">{t("ret.exito_titulo")} <IconThumbUpFilled /></h2>
-                        <p className="dep-success-msg">{resultado.mensaje}</p>
+                        {/**<p className="dep-success-msg">{resultado.mensaje}</p> */}
 
                         <div className="dep-resumen dep-resumen--success">
                             {resultado.detalle?.montoSolicitado && (

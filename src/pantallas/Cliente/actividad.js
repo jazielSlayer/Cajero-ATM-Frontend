@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -16,6 +15,37 @@ const C_OTR  = "#fbbf24";
 const PIE_COLORS = [C_DEP, C_RET, C_TRF, C_OTR, "#a78bfa", "#fb923c"];
 const TIPOS = ["Todos", "Deposito", "Retiro", "Transferencia", "Consulta_saldo", "Pago_servicio"];
 
+// Símbolos de moneda conocidos
+const SIMBOLOS_MONEDA = {
+    BOB: "Bs.",
+    USD: "$",
+    EUR: "€",
+    PEN: "S/",
+    ARS: "$",
+    BRL: "R$",
+    CLP: "$",
+    COP: "$",
+    MXN: "$",
+    GBP: "£",
+    JPY: "¥",
+};
+
+/**
+ * Formatea un número en la moneda indicada.
+ * Si la moneda es BOB → "Bs. 1.234,56"
+ * Si es USD → "$ 10.00"
+ * Si no se conoce el símbolo, muestra "COD 10.00"
+ */
+const fmtMoneda = (monto, moneda = "BOB") => {
+    const numero = Number(monto || 0).toLocaleString("es-BO", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 6,
+    });
+    const simbolo = SIMBOLOS_MONEDA[moneda] || moneda;
+    return `${simbolo} ${numero}`;
+};
+
+// Mantener compatibilidad con código existente que no pasa moneda
 const fmtMonto = (n) =>
     Number(n || 0).toLocaleString("es-BO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -35,6 +65,95 @@ const colorTipo = (tipo) => {
     if (t === "retiro")        return "badge-retiro";
     if (t === "transferencia") return "badge-transferencia";
     return "badge-otro";
+};
+
+/**
+ * Determina si una transacción es en moneda extranjera.
+ * El backend ya normaliza: si moneda_saldo !== "BOB", los saldos mostrados son en esa moneda.
+ */
+const esMonedaExtranjera = (tx) =>
+    tx.moneda_saldo && tx.moneda_saldo !== "BOB";
+
+/**
+ * Devuelve el monto a mostrar en la tabla:
+ * - Para transacciones en moneda extranjera: Monto_original + Moneda_origen
+ * - Para BOB: Monto en BOB
+ */
+const getMontoDisplay = (tx) => {
+    if (esMonedaExtranjera(tx)) {
+        return {
+            monto:  parseFloat(tx.Monto_original),
+            moneda: tx.Moneda_origen,
+        };
+    }
+    return {
+        monto:  parseFloat(tx.Monto),
+        moneda: "BOB",
+    };
+};
+
+/**
+ * Devuelve el saldo posterior a mostrar:
+ * - Para moneda extranjera: Saldo_posterior (ya normalizado por el backend) + moneda_saldo
+ * - Para BOB: Saldo_posterior + "BOB"
+ */
+const getSaldoPostDisplay = (tx) => ({
+    saldo:  parseFloat(tx.Saldo_posterior),
+    moneda: tx.moneda_saldo || "BOB",
+});
+
+/**
+ * Badge de moneda para indicar visualmente cuando no es BOB
+ */
+const MonedaBadge = ({ moneda }) => {
+    if (!moneda || moneda === "BOB") return null;
+    return (
+        <span style={{
+            display:       "inline-flex",
+            alignItems:    "center",
+            marginLeft:    "4px",
+            background:    "rgba(251,191,36,0.15)",
+            color:         "#fbbf24",
+            border:        "1px solid rgba(251,191,36,0.3)",
+            borderRadius:  "4px",
+            fontSize:      "0.62rem",
+            fontWeight:    800,
+            padding:       "1px 5px",
+            letterSpacing: "0.06em",
+        }}>
+            {moneda}
+        </span>
+    );
+};
+
+/**
+ * Cuando hay conversión (BOB depositado que acredita USD, o viceversa),
+ * muestra la línea secundaria con el equivalente.
+ */
+const LineaConversion = ({ tx }) => {
+    // Depósito en BOB que acredita moneda extranjera
+    if (
+        tx.tipo_transaccion === "Deposito" &&
+        tx.Moneda_origen === "BOB" &&
+        tx.Moneda_destino &&
+        tx.Moneda_destino !== "BOB" &&
+        tx.Monto_destino
+    ) {
+        return (
+            <span style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.35)", display: "block", marginTop: "2px" }}>
+                → {fmtMoneda(tx.Monto_destino, tx.Moneda_destino)}
+            </span>
+        );
+    }
+    // Retiro en moneda extranjera: el monto en BOB como referencia
+    if (esMonedaExtranjera(tx)) {
+        return (
+            <span style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.35)", display: "block", marginTop: "2px" }}>
+                ≈ Bs. {fmtMonto(tx.Monto)}
+            </span>
+        );
+    }
+    return null;
 };
 
 const descargarCSV = (csv, filename) => {
@@ -94,10 +213,9 @@ function Actividad() {
     }, [nombre_completo]);
 
     useEffect(() => {
-    if (!nombre_completo) { setError(t("act.sin_sesion")); setLoading(false); return; }
-    cargarDatos();
-}, [cargarDatos, nombre_completo, t]);
-
+        if (!nombre_completo) { setError(t("act.sin_sesion")); setLoading(false); return; }
+        cargarDatos();
+    }, [cargarDatos, nombre_completo, t]);
 
     const aplicarFiltros = () => {
         const f = {};
@@ -141,15 +259,25 @@ function Actividad() {
                 startY: 26,
                 head: [[
                     t("act.col_id"), t("act.col_fecha"), t("act.col_tipo"),
-                    t("act.col_metodo"), t("act.col_monto"), t("act.col_saldo_post"),
+                    t("act.col_metodo"), "Monto", "Moneda", "Saldo post",
                     t("act.col_descripcion"), t("act.col_destinatario"), t("act.col_estado"),
                 ]],
-                body: datos.transacciones.map((tx) => [
-                    tx.transaccion_id, fmtFecha(tx.Fecha_transaccion), tx.tipo_transaccion,
-                    tx.Metodo_transaccion, `Bs. ${fmtMonto(tx.Monto)}`,
-                    `Bs. ${fmtMonto(tx.Saldo_posterior)}`,
-                    tx.Descripcion || "—", tx.nombre_destinatario || "—", tx.estado_transaccion,
-                ]),
+                body: datos.transacciones.map((tx) => {
+                    const { monto, moneda } = getMontoDisplay(tx);
+                    const { saldo, moneda: monedaSaldo } = getSaldoPostDisplay(tx);
+                    return [
+                        tx.transaccion_id,
+                        fmtFecha(tx.Fecha_transaccion),
+                        tx.tipo_transaccion,
+                        tx.Metodo_transaccion,
+                        fmtMonto(monto),
+                        moneda,
+                        `${fmtMonto(saldo)} ${monedaSaldo}`,
+                        tx.Descripcion || "—",
+                        tx.nombre_destinatario || "—",
+                        tx.estado_transaccion,
+                    ];
+                }),
                 styles: { fontSize: 7, cellPadding: 2 },
                 headStyles: { fillColor: [13, 13, 13] },
                 alternateRowStyles: { fillColor: [26, 26, 46] },
@@ -423,41 +551,80 @@ function Actividad() {
                                         <table className="act-table">
                                             <thead>
                                                 <tr>
-                                                    
                                                     <th>{t("act.col_fecha")}</th>
                                                     <th>{t("act.col_tipo")}</th>
                                                     <th>{t("act.col_metodo")}</th>
-                                                    <th>{t("act.col_monto")}</th>
-                                                    <th>{t("act.col_saldo_post")}</th>
+                                                    {/* ✅ Columna Monto ahora muestra moneda real */}
+                                                    <th>Monto</th>
+                                                    {/* ✅ Saldo posterior en la moneda de la operación */}
+                                                    <th>Saldo post.</th>
                                                     <th>{t("act.col_descripcion")}</th>
                                                     <th>{t("act.col_destinatario")}</th>
                                                     <th>{t("act.col_estado")}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {txPagina.map((tx) => (
-                                                    <tr key={tx.transaccion_id}>
-                                                        
-                                                        <td data-label={t("act.col_fecha")}   className="td-fecha">{fmtFecha(tx.Fecha_transaccion)}</td>
-                                                        <td data-label={t("act.col_tipo")}>
-                                                            <span className={`badge ${colorTipo(tx.tipo_transaccion)}`}>{tx.tipo_transaccion}</span>
-                                                        </td>
-                                                        <td data-label={t("act.col_metodo")}>{tx.Metodo_transaccion || "—"}</td>
-                                                        <td
-                                                            data-label={t("act.col_monto")}
-                                                            className={(tx.tipo_transaccion||"").toLowerCase() === "deposito" ? "monto-positivo" : "monto-negativo"}
-                                                        >
-                                                            {(tx.tipo_transaccion||"").toLowerCase() === "deposito" ? "+" : "−"}
-                                                            Bs. {fmtMonto(tx.Monto)}
-                                                        </td>
-                                                        <td data-label={t("act.col_saldo_post")}>Bs. {fmtMonto(tx.Saldo_posterior)}</td>
-                                                        <td data-label={t("act.col_descripcion")} className="td-desc">{tx.Descripcion || "—"}</td>
-                                                        <td data-label={t("act.col_destinatario")}>{tx.nombre_destinatario || "—"}</td>
-                                                        <td data-label={t("act.col_estado")}>
-                                                            <span className={`estado-badge estado-${tx.estado_transaccion}`}>{tx.estado_transaccion}</span>
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                                {txPagina.map((tx) => {
+                                                    const { monto, moneda }         = getMontoDisplay(tx);
+                                                    const { saldo, moneda: mSaldo } = getSaldoPostDisplay(tx);
+                                                    const esDeposito = (tx.tipo_transaccion || "").toLowerCase() === "deposito";
+
+                                                    return (
+                                                        <tr key={tx.transaccion_id}>
+                                                            <td data-label={t("act.col_fecha")} className="td-fecha">
+                                                                {fmtFecha(tx.Fecha_transaccion)}
+                                                            </td>
+
+                                                            <td data-label={t("act.col_tipo")}>
+                                                                <span className={`badge ${colorTipo(tx.tipo_transaccion)}`}>
+                                                                    {tx.tipo_transaccion}
+                                                                </span>
+                                                            </td>
+
+                                                            <td data-label={t("act.col_metodo")}>
+                                                                {tx.Metodo_transaccion || "—"}
+                                                            </td>
+
+                                                            {/* ✅ Monto en la moneda real de la operación */}
+                                                            <td
+                                                                data-label="Monto"
+                                                                className={esDeposito ? "monto-positivo" : "monto-negativo"}
+                                                            >
+                                                                <div style={{ display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
+                                                                    <span>
+                                                                        {esDeposito ? "+" : "−"}
+                                                                        {fmtMoneda(monto, moneda)}
+                                                                    </span>
+                                                                    <MonedaBadge moneda={moneda} />
+                                                                </div>
+                                                                {/* Línea secundaria: conversión o equivalente en BOB */}
+                                                                <LineaConversion tx={tx} />
+                                                            </td>
+
+                                                            {/* ✅ Saldo posterior en la moneda correcta */}
+                                                            <td data-label="Saldo post.">
+                                                                <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                                                                    <span>{fmtMoneda(saldo, mSaldo)}</span>
+                                                                    <MonedaBadge moneda={mSaldo} />
+                                                                </div>
+                                                            </td>
+
+                                                            <td data-label={t("act.col_descripcion")} className="td-desc">
+                                                                {tx.Descripcion || "—"}
+                                                            </td>
+
+                                                            <td data-label={t("act.col_destinatario")}>
+                                                                {tx.nombre_destinatario || "—"}
+                                                            </td>
+
+                                                            <td data-label={t("act.col_estado")}>
+                                                                <span className={`estado-badge estado-${tx.estado_transaccion}`}>
+                                                                    {tx.estado_transaccion}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
                                             </tbody>
                                         </table>
                                     </div>
@@ -522,6 +689,7 @@ function Actividad() {
                                         <div key={s.Codigo} className="saldo-moneda-row">
                                             <span className="saldo-codigo">{s.Codigo}</span>
                                             <span className="saldo-simbolo">{s.Simbolo}</span>
+                                            {/* ✅ Cada saldo ya viene en su propia moneda desde el backend */}
                                             <span className="saldo-valor">{fmtMonto(s.Saldo)}</span>
                                             <span className="saldo-actualiz">{fmtFecha(s.Fecha_modificacion)}</span>
                                         </div>

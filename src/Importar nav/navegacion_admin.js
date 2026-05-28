@@ -5,9 +5,11 @@ import "../Css/Traductor.css";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
-    IconCashPlus, IconUser, IconCashMove, IconWallet,
-    IconCashBanknoteMinus, IconScale, IconHelp,
-    IconClipboardData, IconHome, IconSearch, IconLanguage,
+     IconUser, IconWallet, IconSearch, IconLanguage,
+    IconLayoutDashboard,
+    IconInvoice,
+     IconBusinessplan,
+      IconArrowRotaryLeft
 } from "@tabler/icons-react";
 
 const IDIOMAS = [
@@ -60,11 +62,10 @@ function Navegacion({ isOpen, onToggle }) {
                 </div>
 
                 <div className="right">
-                    <Link to="/cliente/depositar" className="pestañas icons-header"><IconCashPlus /></Link>
-                    <Link to="/cliente/retirar"   className="pestañas icons-header"><IconCashBanknoteMinus /></Link>
-                    <Link to="/cliente/transferir" className="pestañas icons-header"><IconCashMove /></Link>
-                    <Link to="/cliente/actividad"  className="pestañas icons-header"><IconClipboardData /></Link>
-                    <Link to="/cliente/saldo"      className="pestañas icons-header"><IconScale /></Link>
+                    <Link to="/admin/dashboard" className="pestañas icons-header"><IconLayoutDashboard /></Link>
+                    <Link to="/admin/users"   className="pestañas icons-header"><IconUser /></Link>
+                    <Link to="/admin/cuentas" className="pestañas icons-header"><IconInvoice /></Link>
+                    <Link to="/admin/monedas"  className="pestañas icons-header">< IconBusinessplan /></Link>
 
                     {/* ── Selector de idioma ─────────────────────────────── */}
                     <div className="lang-selector" ref={menuRef}>
@@ -106,7 +107,7 @@ function Navegacion({ isOpen, onToggle }) {
                         )}
                     </div>
 
-                    <Link to="/cliente/perfil" className="pestañas icons-header">
+                    <Link to="/admin/perfil" className="pestañas icons-header">
                         <IconUser className="user" />
                     </Link>
                 </div>
@@ -123,39 +124,33 @@ function Navegacion({ isOpen, onToggle }) {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/cliente" className="a selected">
-                                <IconHome className="img" />
+                            <Link to="/admin/dashboard" className="a selected">
+                                <IconLayoutDashboard className="img" />
                                 <span>{t("nav.inicio")}</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/cliente/actividad" className="a">
-                                <IconClipboardData className="img" />
+                            <Link to="/admin/users" className="a">
+                                <IconUser className="img" />
                                 <span>{t("nav.actividad")}</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/cliente/retirar" className="a">
-                                <IconCashBanknoteMinus className="img" />
+                            <Link to="/admin/cuentas" className="a">
+                                <IconInvoice className="img" />
                                 <span>{t("nav.retirar")}</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/cliente/depositar" className="a">
-                                <IconCashPlus className="img" />
+                            <Link to="/admin/monedas" className="a">
+                                <IconBusinessplan className="img" />
                                 <span>{t("nav.depositar")}</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/cliente/transferir" className="a">
-                                <IconCashMove className="img" />
-                                <span>{t("nav.transferir")}</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/cliente/ayuda" className="a">
-                                <IconHelp className="img" />
-                                <span>{t("nav.ayuda")}</span>
+                            <Link to="/admin/colas" className="a">
+                                < IconArrowRotaryLeft className="img" />
+                                <span>{t("nav.depositar")}</span>
                             </Link>
                         </li>
                     </ul>

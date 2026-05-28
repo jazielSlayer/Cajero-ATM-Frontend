@@ -17,6 +17,8 @@ import Ayuda           from "./pantallas/Cliente/ayuda";
 import Admin           from "./pantallas/pantallas de administradore/admin";
 import Operador        from "./pantallas/pantallas de administradore/operador";
 import Registrar from "./pantallas/Registrar";
+
+import PerfilCliente from "./pantallas/Cliente/perfil";
 createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <AuthProvider>
@@ -49,6 +51,11 @@ createRoot(document.getElementById("root")).render(
                     <Route path="/cliente/actividad" element={
                         <RutaProtegida roles={["Cliente"]}>
                             <Actividad />
+                        </RutaProtegida>
+                    } />
+                    <Route path="/cliente/perfil" element={
+                        <RutaProtegida roles={["Cliente"]}>
+                            <PerfilCliente />
                         </RutaProtegida>
                     } />
                     <Route path="/cliente/ayuda" element={

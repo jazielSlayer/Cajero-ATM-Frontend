@@ -106,7 +106,7 @@ function Navegacion({ isOpen, onToggle }) {
                         )}
                     </div>
 
-                    <Link href="#" className="pestañas icons-header">
+                    <Link to="/cliente/perfil" className="pestañas icons-header">
                         <IconUser className="user" />
                     </Link>
                 </div>

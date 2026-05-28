@@ -1,0 +1,666 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Perfil.css  — Dark theme consistente con Depositar.css
+═══════════════════════════════════════════════════════════════════ */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&family=DM+Mono:wght@400;500&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css");
+
+/* ── Variables (idénticas a Depositar.css) ─────────────────────── */
+:root {
+    --pf-bg:        #050505;
+    --pf-card:      #0f0f0f;
+    --pf-primary:   #ffffff;
+    --pf-accent:    #000000;
+    --pf-border:    #1f1f1f;
+    --pf-text:      #ffffff;
+    --pf-muted:     #bdbdbd;
+    --pf-radius:    14px;
+    --pf-shadow:    0 4px 24px rgba(0, 0, 0, 0.65);
+
+    /* Acentos de color para saldos / métricas */
+    --pf-green:     #4ade80;
+    --pf-red:       #f87171;
+    --pf-blue:      #60a5fa;
+    --pf-cyan:      #4cc9f0;
+    --pf-purple:    #a78bfa;
+    --pf-gold:      #fbbf24;
+}
+
+/* ── Layout base ───────────────────────────────────────────────── */
+.pf-page {
+    font-family: "DM Sans", sans-serif;
+    min-height: 100vh;
+    background: var(--pf-bg);
+    padding-top: 4rem;
+    padding-bottom: 3rem;
+    margin-left: 4rem;
+    color: var(--pf-text);
+}
+
+.pf-contenedor {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: pfFadeUp 0.4s ease;
+}
+
+@keyframes pfFadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Spinner ───────────────────────────────────────────────────── */
+.pf-spinner-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    gap: 16px;
+}
+
+.pf-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid rgba(255, 255, 255, 0.06);
+    border-top-color: var(--pf-cyan);
+    border-radius: 50%;
+    animation: pfSpin 0.8s linear infinite;
+}
+
+.pf-spinner-txt {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+@keyframes pfSpin { to { transform: rotate(360deg); } }
+
+/* ── Card base (igual que .dep-card) ──────────────────────────── */
+.pf-card {
+    background: var(--pf-card);
+    border-radius: var(--pf-radius);
+    box-shadow: var(--pf-shadow);
+    padding: 24px;
+    border: 1px solid var(--pf-border);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pf-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 36px rgba(0, 0, 0, 0.75);
+}
+
+/* ── Hero card ─────────────────────────────────────────────────── */
+.pf-hero {
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pf-hero-bg {
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.pf-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+/* ── Avatar ────────────────────────────────────────────────────── */
+.pf-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pf-cyan) 0%, #7209b7 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    font-family: "DM Mono", monospace;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+/* ── Hero texto ────────────────────────────────────────────────── */
+.pf-hero-meta {
+    flex: 1;
+    min-width: 200px;
+}
+
+.pf-hero-eyebrow {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.pf-hero-nombre {
+    margin: 0 0 4px;
+    font-family: "DM Serif Display", serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.pf-hero-tags {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pf-tag-id {
+    font-size: 0.7rem;
+    color: var(--pf-muted);
+    font-family: "DM Mono", monospace;
+    letter-spacing: 0.04em;
+}
+
+.pf-tag-estado {
+    background: rgba(74, 222, 128, 0.1);
+    color: var(--pf-green);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+/* ── Acciones hero ─────────────────────────────────────────────── */
+.pf-hero-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.pf-btn-icon {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid var(--pf-border);
+    border-radius: 8px;
+    color: var(--pf-muted);
+    cursor: pointer;
+    padding: 8px 10px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.pf-btn-icon:hover {
+    border-color: var(--pf-primary);
+    color: var(--pf-primary);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.pf-btn-icon--active {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--pf-primary);
+    color: var(--pf-primary);
+}
+
+/* ── Stats grid ────────────────────────────────────────────────── */
+.pf-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+}
+
+.pf-stat-card {
+    background: var(--pf-card);
+    border-radius: 12px;
+    padding: 16px 18px;
+    border: 1px solid var(--pf-border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pf-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+.pf-stat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pf-stat-icon {
+    font-size: 1rem;
+}
+
+.pf-stat-label {
+    font-size: 0.65rem;
+    color: var(--pf-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+.pf-stat-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-family: "DM Mono", monospace;
+    letter-spacing: 0.02em;
+}
+
+/* Variantes de color para stat cards */
+.pf-stat-card--green  { border-color: rgba(74, 222, 128, 0.15);  background: rgba(74, 222, 128, 0.04); }
+.pf-stat-card--red    { border-color: rgba(248, 113, 113, 0.15); background: rgba(248, 113, 113, 0.04); }
+.pf-stat-card--blue   { border-color: rgba(96, 165, 250, 0.15);  background: rgba(96, 165, 250, 0.04); }
+.pf-stat-card--cyan   { border-color: rgba(76, 201, 240, 0.15);  background: rgba(76, 201, 240, 0.04); }
+
+.pf-stat-card--green  .pf-stat-icon,
+.pf-stat-card--green  .pf-stat-value  { color: var(--pf-green);  }
+.pf-stat-card--red    .pf-stat-icon,
+.pf-stat-card--red    .pf-stat-value  { color: var(--pf-red);    }
+.pf-stat-card--blue   .pf-stat-icon,
+.pf-stat-card--blue   .pf-stat-value  { color: var(--pf-blue);   }
+.pf-stat-card--cyan   .pf-stat-icon,
+.pf-stat-card--cyan   .pf-stat-value  { color: var(--pf-cyan);   }
+
+/* ── Columnas principales ──────────────────────────────────────── */
+.pf-columnas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.pf-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ── Section header ────────────────────────────────────────────── */
+.pf-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.pf-section-icon { font-size: 1.05rem; }
+
+.pf-section-title {
+    margin: 0;
+    font-family: "DM Serif Display", serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.pf-divider {
+    height: 1px;
+    background: var(--pf-border);
+    margin-bottom: 18px;
+}
+
+/* ── Info fields ───────────────────────────────────────────────── */
+.pf-info-field {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pf-info-field:last-of-type { border-bottom: none; }
+
+.pf-info-icon-wrap {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.pf-info-body { flex: 1; min-width: 0; }
+
+.pf-info-label {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.pf-info-value {
+    font-size: 0.88rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pf-info-value--mono { font-family: "DM Mono", monospace; }
+
+/* ── Seguridad ─────────────────────────────────────────────────── */
+.pf-security-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pf-security-row:last-of-type { border-bottom: none; }
+
+.pf-security-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pf-security-icon { font-size: 1rem; }
+
+.pf-security-lbl {
+    font-size: 0.7rem;
+    color: var(--pf-muted);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.pf-security-val {
+    font-size: 0.85rem;
+    color: #fff;
+    font-family: "DM Mono", monospace;
+}
+
+.pf-badge {
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.pf-badge--green  { background: rgba(74, 222, 128, 0.1);  color: var(--pf-green);  border: 1px solid rgba(74, 222, 128, 0.2);  }
+.pf-badge--cyan   { background: rgba(76, 201, 240, 0.1);  color: var(--pf-cyan);   border: 1px solid rgba(76, 201, 240, 0.2);  }
+
+.pf-security-note {
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pf-security-note i  { font-size: 0.9rem; color: var(--pf-muted); }
+
+.pf-security-note span {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.35);
+    font-style: italic;
+}
+
+/* ── Info cuenta ───────────────────────────────────────────────── */
+.pf-btn-copiar {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1.5px solid var(--pf-border);
+    border-radius: 8px;
+    color: var(--pf-muted);
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.pf-btn-copiar:hover {
+    border-color: var(--pf-primary);
+    color: var(--pf-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Tarjeta bancaria visual ───────────────────────────────────── */
+.pf-tarjeta {
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    background: linear-gradient(145deg, #0a0a0a 0%, #141414 50%, #0a0a0a 100%);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius);
+    box-shadow: var(--pf-shadow);
+    transition: transform 0.25s ease;
+}
+
+.pf-tarjeta:hover { transform: translateY(-2px); }
+
+.pf-tarjeta-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pf-tarjeta-chip {
+    width: 38px;
+    height: 30px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #b8960e, #e8c84a, #9a7a08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #2a1800;
+    box-shadow: 0 2px 10px rgba(184, 150, 14, 0.35);
+}
+
+.pf-tarjeta-tipo {
+    font-size: 0.72rem;
+    color: var(--pf-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.pf-tarjeta-numero {
+    font-size: 1.15rem;
+    letter-spacing: 0.2em;
+    color: #fff;
+    font-family: "DM Mono", monospace;
+    margin: 14px 0;
+}
+
+.pf-tarjeta-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.pf-tarjeta-eyebrow {
+    font-size: 0.58rem;
+    color: var(--pf-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 3px;
+}
+
+.pf-tarjeta-val {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: "DM Mono", monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* ── Saldos por moneda ─────────────────────────────────────────── */
+.pf-saldos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pf-saldo-item {
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--pf-border);
+}
+
+.pf-saldo-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.pf-saldo-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pf-saldo-codigo {
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    font-family: "DM Mono", monospace;
+}
+
+.pf-saldo-nombre {
+    font-size: 0.7rem;
+    color: var(--pf-muted);
+}
+
+.pf-saldo-monto {
+    font-weight: 700;
+    font-family: "DM Mono", monospace;
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.pf-saldo-bar-track {
+    height: 3px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 99px;
+}
+
+.pf-saldo-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.8s ease;
+}
+
+/* ── Botón editar ──────────────────────────────────────────────── */
+.pf-btn-editar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1.5px solid var(--pf-border);
+    border-radius: 8px;
+    color: var(--pf-muted);
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 18px;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.pf-btn-editar:hover {
+    border-color: var(--pf-primary);
+    color: var(--pf-primary);
+}
+
+/* ── Error ─────────────────────────────────────────────────────── */
+.pf-error {
+    color: var(--pf-red);
+    text-align: center;
+    padding: 2rem;
+}
+
+
+/* ── Botón cerrar sesión ───────────────────────────────────────── */
+.pf-btn-icon--logout {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    color: var(--pf-red);
+    border-color: rgba(248, 113, 113, 0.2);
+    background: rgba(248, 113, 113, 0.05);
+}
+
+.pf-btn-icon--logout:hover {
+    border-color: var(--pf-red);
+    color: var(--pf-red);
+    background: rgba(248, 113, 113, 0.1);
+}
+
+.pf-btn-icon--confirm {
+    border-color: #f59e0b !important;
+    color: #f59e0b !important;
+    background: rgba(245, 158, 11, 0.1) !important;
+    animation: pfPulse 0.6s ease;
+}
+
+@keyframes pfPulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.04); }
+}
+
+.pf-btn-logout-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+    .pf-columnas { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+    .pf-page { margin-left: 0; padding-top: 1rem; }
+    .pf-contenedor { padding: 16px 16px 0; }
+    .pf-hero-inner { flex-direction: column; align-items: flex-start; }
+    .pf-stats-grid { grid-template-columns: 1fr 1fr; }
+}

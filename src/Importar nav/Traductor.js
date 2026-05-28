@@ -1,8 +1,5 @@
-// ── src/i18n/i18n.js ─────────────────────────────────────────────────────────
-// Instalar dependencias:  npm install i18next react-i18next
-// Importar este archivo una sola vez en tu main.jsx / index.jsx:
-//   import "./i18n/i18n";
-// ─────────────────────────────────────────────────────────────────────────────
+
+
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 

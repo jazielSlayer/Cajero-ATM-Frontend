@@ -66,7 +66,7 @@ createRoot(document.getElementById("root")).render(
                     } />
 
                     {/* ── Ruta de Administrador ── */}
-                    <Route path="/admin/" element={
+                    <Route path="/admin/dashboard" element={
                         <RutaProtegida roles={["Administrador"]}>
                             <Admin />
                         </RutaProtegida>

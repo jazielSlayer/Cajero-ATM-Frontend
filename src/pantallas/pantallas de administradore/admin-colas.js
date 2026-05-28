@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from "react";
-import "./../../Css/pantallas de los admins/Admin.css";
 import "./../../Css/pantallas de los admins/AdminColas.css";
 import ImportarNav from "../../Importar nav/import-nav-admin";
 import {

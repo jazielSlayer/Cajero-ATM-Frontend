@@ -15,6 +15,7 @@ import Actividad       from "./pantallas/Cliente/actividad";
 import Ayuda           from "./pantallas/Cliente/ayuda";
 
 import Admin           from "./pantallas/pantallas de administradore/admin";
+import AdminColas      from "./pantallas/pantallas de administradore/admin-colas";
 import Operador        from "./pantallas/pantallas de administradore/operador";
 import Registrar from "./pantallas/Registrar";
 
@@ -68,6 +69,12 @@ createRoot(document.getElementById("root")).render(
                     <Route path="/admin/" element={
                         <RutaProtegida roles={["Administrador"]}>
                             <Admin />
+                        </RutaProtegida>
+                    } />
+                    
+                    <Route path="/admin/colas" element={
+                        <RutaProtegida roles={["Administrador"]}>
+                            <AdminColas />
                         </RutaProtegida>
                     } />
 
